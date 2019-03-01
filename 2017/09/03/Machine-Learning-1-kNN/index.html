@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext">
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="kNN简介算法流程 基本分类和回归方法。大多用于分类。 分类时，根据k个最近邻实例的类别，通过多数表决等方式进行预测。 不具有显示的学习过程。（训练过程） KNN即最近邻算法，其主要过程为： 计算训练样本和测试样本中每个样本点的距离（常见的距离度量有欧式距离，马氏距离等）； 对上面所有的距离值进行排序； 选前k个最小距离的样本； 根据这k个样本的标签进行投票，得到最后的分类类别；    三个基本要">
+<meta name="keywords" content="MachineLearning,python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Machine Learning (1): kNN">
+<meta property="og:url" content="http://ywtail.github.io/2017/09/03/Machine-Learning-1-kNN/index.html">
+<meta property="og:site_name" content="ywtail&#39;s blog">
+<meta property="og:description" content="kNN简介算法流程 基本分类和回归方法。大多用于分类。 分类时，根据k个最近邻实例的类别，通过多数表决等方式进行预测。 不具有显示的学习过程。（训练过程） KNN即最近邻算法，其主要过程为： 计算训练样本和测试样本中每个样本点的距离（常见的距离度量有欧式距离，马氏距离等）； 对上面所有的距离值进行排序； 选前k个最小距离的样本； 根据这k个样本的标签进行投票，得到最后的分类类别；    三个基本要">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-01-26T15:19:41.954Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Machine Learning (1): kNN">
+<meta name="twitter:description" content="kNN简介算法流程 基本分类和回归方法。大多用于分类。 分类时，根据k个最近邻实例的类别，通过多数表决等方式进行预测。 不具有显示的学习过程。（训练过程） KNN即最近邻算法，其主要过程为： 计算训练样本和测试样本中每个样本点的距离（常见的距离度量有欧式距离，马氏距离等）； 对上面所有的距离值进行排序； 选前k个最小距离的样本； 根据这k个样本的标签进行投票，得到最后的分类类别；    三个基本要">
+
+
+
+
+
+
+  <link rel="canonical" href="http://ywtail.github.io/2017/09/03/Machine-Learning-1-kNN/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Machine Learning (1): kNN | ywtail's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ywtail's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ywtail.github.io/2017/09/03/Machine-Learning-1-kNN/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ywtail">
+      <meta itemprop="description" content="Be a man.">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ywtail's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Machine Learning (1): kNN
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-09-03 18:39:36" itemprop="dateCreated datePublished" datetime="2017-09-03T18:39:36+08:00">2017-09-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-26 23:19:41" itemprop="dateModified" datetime="2019-01-26T23:19:41+08:00">2019-01-26</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <a href="/2017/09/03/Machine-Learning-1-kNN/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2017/09/03/Machine-Learning-1-kNN/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2017/09/03/Machine-Learning-1-kNN/" class="leancloud_visitors" data-flag-title="Machine Learning (1): kNN">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="kNN简介"><a href="#kNN简介" class="headerlink" title="kNN简介"></a>kNN简介</h2><h3 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h3><ul>
+<li>基本分类和回归方法。大多用于分类。</li>
+<li>分类时，根据k个最近邻实例的类别，通过多数表决等方式进行预测。</li>
+<li>不具有显示的学习过程。（训练过程）</li>
+<li>KNN即最近邻算法，其主要过程为：<ul>
+<li>计算训练样本和测试样本中每个样本点的距离（常见的距离度量有欧式距离，马氏距离等）；</li>
+<li>对上面所有的距离值进行排序；</li>
+<li>选前k个最小距离的样本；</li>
+<li>根据这k个样本的标签进行投票，得到最后的分类类别；</li>
+</ul>
+</li>
+</ul>
+<h3 id="三个基本要素"><a href="#三个基本要素" class="headerlink" title="三个基本要素"></a>三个基本要素</h3><ul>
+<li>这三个基本要素是：<ul>
+<li>k值的选择</li>
+<li>距离度量</li>
+<li>分类决策规则</li>
+</ul>
+</li>
+</ul>
+<h4 id="k值的选择"><a href="#k值的选择" class="headerlink" title="k值的选择"></a>k值的选择</h4><ul>
+<li>k=1时称 最近邻法</li>
+<li>k值的选择（不具有显示学习过程，所以下方学习打引号）<ul>
+<li>k不同，有可能导致分类不同</li>
+<li>在应用中，k值一般取一个比较小的数值。通常采用<strong>交叉验证法</strong>来选取最优的k值</li>
+<li>k过小<ul>
+<li>过拟合</li>
+<li>相当于用较小的领域中的训练实例进行预测</li>
+<li>“学习”的近似误差（approximation error）会减小（与训练集误差小）</li>
+<li>“学习”的估计误差（estimation error）会增大（与测试集误差大）</li>
+<li>预测结果会对近邻实例点非常敏感，如果近邻的实例点恰好是噪声，预测就会出错</li>
+<li>即，k值的减小意味着整体模型变得复杂，容易发生过拟合</li>
+</ul>
+</li>
+<li>k过大<ul>
+<li>欠拟合</li>
+<li>相当于用较大的领域中的训练实例进行预测</li>
+<li>“学习”的近似误差（approximation error）会增大（与训练集误差大）</li>
+<li>“学习”的估计误差（estimation error）会减小（与测试集误差小）</li>
+<li>与输入实例较远的（不相似的）训练实例也会对预测起作用，使预测发生错误</li>
+<li>即，k值得增大意味着整体的模型变得简单</li>
+<li>如果k=N，则不论输入什么，都简单地预测它属于实例中最多的类。这时，模型过于简单，完全忽略了训练实例中的大量有用信息，是不可取的</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="距离度量"><a href="#距离度量" class="headerlink" title="距离度量"></a>距离度量</h4><ul>
+<li>欧式距离 Euclidean distance（Lp距离，p=2的情况）</li>
+<li>p=1，曼哈顿距离 Manhattan distance</li>
+<li>p=无穷，各坐标距离的最大值（无求和过程）</li>
+<li>p越大，Lp距离越小</li>
+<li>距离度量不同，x1与x2最近，可能变为x1与x3最近。</li>
+<li>从图中直接观察的距离是欧式距离。</li>
+<li>所以，并不是在图上看起来最近，使用Lp算出来的距离就最近，这完全要看p的取值。</li>
+</ul>
+<h4 id="分类决策规则"><a href="#分类决策规则" class="headerlink" title="分类决策规则"></a>分类决策规则</h4><ul>
+<li>往往是多数表决。多数表决规则（majority voting rule）</li>
+</ul>
+<h3 id="kNN实现"><a href="#kNN实现" class="headerlink" title="kNN实现"></a>kNN实现</h3><ul>
+<li>简单实现方法：线性扫描（linear scan）<ul>
+<li>计算输入实例与每一个训练实例的距离。</li>
+<li>当训练集很大时，非常耗时，不可行</li>
+</ul>
+</li>
+<li>kd树（kd tree），这里k与k-NN的k意义不同<ul>
+<li>实现时，主要考虑如何对训练数据快速地进行k近邻搜索。在特征空间维数大及训练数据容量大时尤其必要。</li>
+<li>为了提高搜索效率，考虑使用特殊的结构存储训练数据，以减少计算距离的次数</li>
+<li>具体方法很多，介绍kd树</li>
+</ul>
+</li>
+</ul>
+<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><ul>
+<li>KNN算法的优点<ul>
+<li>思想简单，理论成熟，既可以用来做分类也可以用来做回归；</li>
+<li>可用于非线性分类；</li>
+<li>训练时间复杂度为O(n)；</li>
+<li>准确度高，对数据没有假设，对outlier不敏感；</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>计算量大；</li>
+<li>样本不平衡问题（即有些类别的样本数量很多，而其它样本的数量很少）；</li>
+<li>需要大量的内存；</li>
+</ul>
+</li>
+</ul>
+<h2 id="Python实现"><a href="#Python实现" class="headerlink" title="Python实现"></a>Python实现</h2><p>环境：</p>
+<blockquote>
+<p>Python 2.7.13<br>numpy 1.12.0<br>pandas 0.19.2<br>skleran 0.18.1</p>
+</blockquote>
+<p>为了验证效果，使用的数据集是kaggle上digit-recognizer给的数据集，取了前3000行来验证实现的kNN效果。</p>
+<h3 id="线性扫描法（Linear-Scan）实现"><a href="#线性扫描法（Linear-Scan）实现" class="headerlink" title="线性扫描法（Linear Scan）实现"></a>线性扫描法（Linear Scan）实现</h3><p>实现详细过程见：<a href="https://ywtail.github.io/python/%E5%8F%AF%E8%A7%86%E5%8C%96/kNN%E7%BA%BF%E6%80%A7%E6%89%AB%E6%8F%8F%E5%AE%9E%E7%8E%B0.html">kNN线性扫描实现</a>，其中包括各个函数的用法探索。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding:utf-8</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> division</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">knnClassify</span><span class="params">(newinput, datas, labels, k, p)</span>:</span></span><br><span class="line">    <span class="comment"># 计算距离</span></span><br><span class="line">    diff = abs(np.tile(newinput, (len(datas), <span class="number">1</span>)) - datas)</span><br><span class="line">    distances = (np.sum(diff ** p, axis=<span class="number">1</span>)) ** (<span class="number">1</span> / p)</span><br><span class="line">    sort_distances = np.argsort(distances)</span><br><span class="line">    <span class="comment">#print distances</span></span><br><span class="line">    <span class="comment"># print sort_distances</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 投票法决定分类</span></span><br><span class="line">    classCount = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(k):</span><br><span class="line">        label = labels[sort_distances[i]]</span><br><span class="line">        classCount[label] = classCount.get(label, <span class="number">0</span>) + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    maxCount = <span class="number">0</span></span><br><span class="line">    maxIndex = <span class="number">-1</span></span><br><span class="line">    <span class="keyword">for</span> key, value <span class="keyword">in</span> classCount.items():</span><br><span class="line">        <span class="keyword">if</span> value &gt; maxCount:</span><br><span class="line">            maxCount = value</span><br><span class="line">            maxIndex = key</span><br><span class="line">    <span class="keyword">return</span> maxIndex</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    # example in book</span></span><br><span class="line"><span class="string">    group = [[5, 1], [4, 4]]</span></span><br><span class="line"><span class="string">    lables = ['a', 'b']</span></span><br><span class="line"><span class="string">    print knnClassify([1, 1], group, lables, 1, 1)</span></span><br><span class="line"><span class="string">    print knnClassify([1, 1], group, lables, 1, 2)</span></span><br><span class="line"><span class="string">    print knnClassify([1, 1], group, lables, 1, 3)</span></span><br><span class="line"><span class="string">    print knnClassify([1, 1], group, lables, 1, 4)</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># example for digit recognizer</span></span><br><span class="line">    all_data = pd.read_csv(<span class="string">'/Users/liuyue/workspace/pythonstudy/test/digit_datas.csv'</span>)</span><br><span class="line">    y = all_data[<span class="string">'label'</span>].values</span><br><span class="line">    x = all_data.drop([<span class="string">'label'</span>], axis=<span class="number">1</span>).values</span><br><span class="line">    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=<span class="number">0.3</span>)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Data Infomation:'</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Train Data Information: '</span>,x_train.shape, len(y_train)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Test Data Information: '</span>,x_test.shape, len(y_test)</span><br><span class="line"></span><br><span class="line">    matchCount = <span class="number">0</span></span><br><span class="line">    accuracy = <span class="number">0</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">'识别错误的数如下：'</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(x_test)):</span><br><span class="line">        predict = knnClassify(x_test[i], x_train, y_train, <span class="number">3</span>, <span class="number">2</span>)</span><br><span class="line">        <span class="comment"># print predict,y_test[i]</span></span><br><span class="line">        <span class="keyword">if</span> predict == y_test[i]:</span><br><span class="line">            matchCount += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>: <span class="comment"># 打印识别错误的数</span></span><br><span class="line">            <span class="keyword">print</span> predict, y_test[i]</span><br><span class="line">        accuracy = float(matchCount) / len(x_test)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'accuracy:'</span>,accuracy</span><br></pre></td></tr></table></figure></p>
+<p>运行结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">Data Infomation:</span><br><span class="line">Train Data Information:  (2100, 784) 2100</span><br><span class="line">Test Data Information:  (900, 784) 900</span><br><span class="line">识别错误的数如下：</span><br><span class="line">6 0</span><br><span class="line">9 5</span><br><span class="line">4 9</span><br><span class="line">6 8</span><br><span class="line">0 8</span><br><span class="line">5 8</span><br><span class="line">8 2</span><br><span class="line">1 7</span><br><span class="line">8 3</span><br><span class="line">7 9</span><br><span class="line">1 3</span><br><span class="line">1 4</span><br><span class="line">1 7</span><br><span class="line">8 5</span><br><span class="line">3 8</span><br><span class="line">1 8</span><br><span class="line">0 6</span><br><span class="line">0 5</span><br><span class="line">1 8</span><br><span class="line">9 8</span><br><span class="line">7 3</span><br><span class="line">9 4</span><br><span class="line">5 9</span><br><span class="line">3 2</span><br><span class="line">1 7</span><br><span class="line">8 2</span><br><span class="line">8 5</span><br><span class="line">1 7</span><br><span class="line">7 8</span><br><span class="line">6 0</span><br><span class="line">8 2</span><br><span class="line">5 3</span><br><span class="line">9 4</span><br><span class="line">1 2</span><br><span class="line">0 5</span><br><span class="line">9 4</span><br><span class="line">9 4</span><br><span class="line">7 2</span><br><span class="line">9 4</span><br><span class="line">7 9</span><br><span class="line">7 8</span><br><span class="line">8 3</span><br><span class="line">4 9</span><br><span class="line">9 4</span><br><span class="line">9 8</span><br><span class="line">9 3</span><br><span class="line">4 8</span><br><span class="line">9 7</span><br><span class="line">5 8</span><br><span class="line">5 8</span><br><span class="line">1 7</span><br><span class="line">1 8</span><br><span class="line">1 2</span><br><span class="line">9 5</span><br><span class="line">1 7</span><br><span class="line">0 5</span><br><span class="line">6 0</span><br><span class="line">8 5</span><br><span class="line">3 8</span><br><span class="line">2 8</span><br><span class="line">1 4</span><br><span class="line">9 4</span><br><span class="line">9 4</span><br><span class="line">0 9</span><br><span class="line">9 4</span><br><span class="line">5 9</span><br><span class="line">7 2</span><br><span class="line">8 5</span><br><span class="line">9 5</span><br><span class="line">9 3</span><br><span class="line">8 3</span><br><span class="line">2 3</span><br><span class="line">9 8</span><br><span class="line">4 2</span><br><span class="line">5 8</span><br><span class="line">9 0</span><br><span class="line">5 8</span><br><span class="line">1 8</span><br><span class="line">9 8</span><br><span class="line">accuracy: 0.912222222222</span><br></pre></td></tr></table></figure></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>李航. 统计学习方法[M]. 清华大学出版社, 2012.</li>
+<li><a href="http://www.cnblogs.com/tornadomeet/p/3395593.html" target="_blank" rel="noopener">机器学习&amp;数据挖掘笔记_16（常见面试之机器学习算法思想简单梳理）</a></li>
+<li><a href="http://blog.csdn.net/zouxy09/article/details/16955347" target="_blank" rel="noopener">机器学习算法与Python实践之（一）k近邻（KNN）</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MachineLearning/" rel="tag"># MachineLearning</a>
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/10/python实现全排列/" rel="next" title="python实现全排列">
+                <i class="fa fa-chevron-left"></i> python实现全排列
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/06/Machine-Learning-2-Decision-Tree/" rel="prev" title="Machine Learning (2): Decision Tree">
+                Machine Learning (2): Decision Tree <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">ywtail</p>
+              <p class="site-description motion-element" itemprop="description">Be a man.</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#kNN简介"><span class="nav-number">1.</span> <span class="nav-text">kNN简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法流程"><span class="nav-number">1.1.</span> <span class="nav-text">算法流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三个基本要素"><span class="nav-number">1.2.</span> <span class="nav-text">三个基本要素</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#k值的选择"><span class="nav-number">1.2.1.</span> <span class="nav-text">k值的选择</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#距离度量"><span class="nav-number">1.2.2.</span> <span class="nav-text">距离度量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分类决策规则"><span class="nav-number">1.2.3.</span> <span class="nav-text">分类决策规则</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kNN实现"><span class="nav-number">1.3.</span> <span class="nav-text">kNN实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优缺点"><span class="nav-number">1.4.</span> <span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python实现"><span class="nav-number">2.</span> <span class="nav-text">Python实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#线性扫描法（Linear-Scan）实现"><span class="nav-number">2.1.</span> <span class="nav-text">线性扫描法（Linear Scan）实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ywtail</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'Hn01Iq5tm1St1y55hF5K2M1P-gzGzoHsz',
+    appKey: 'VMAeg3KLjfddIO4nxJCqersc',
+    placeholder: '在此处输入评论',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+
+  
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log(`Failed to save Visitor num, with error message: ${responseJSON.error}`);
+              })
+          } else {
+            
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1 }))
+                .done(function() {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function() {
+                  console.log('Failed to create');
+                });
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log(`LeanCloud Counter Error: ${responseJSON.code} ${responseJSON.error}`);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'Hn01Iq5tm1St1y55hF5K2M1P-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'Hn01Iq5tm1St1y55hF5K2M1P-gzGzoHsz',
+                'X-LC-Key': 'VMAeg3KLjfddIO4nxJCqersc',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

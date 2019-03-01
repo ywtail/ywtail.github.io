@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext">
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Titanic代码地址：https://github.com/ywtail/kaggle/tree/master/1_Titanic 2017.4.7：Titanic-1score：0.76555使用模型：RandomForestClassifier运行过程展示地址：https://ywtail.github.io/kaggle/1_Titanic/Titanic-1.html说明：titanic">
+<meta name="keywords" content="Kaggle,MachineLearning,python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kaggle记录">
+<meta property="og:url" content="http://ywtail.github.io/2017/06/19/Kaggle记录/index.html">
+<meta property="og:site_name" content="ywtail&#39;s blog">
+<meta property="og:description" content="Titanic代码地址：https://github.com/ywtail/kaggle/tree/master/1_Titanic 2017.4.7：Titanic-1score：0.76555使用模型：RandomForestClassifier运行过程展示地址：https://ywtail.github.io/kaggle/1_Titanic/Titanic-1.html说明：titanic">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-01-26T15:19:41.953Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kaggle记录">
+<meta name="twitter:description" content="Titanic代码地址：https://github.com/ywtail/kaggle/tree/master/1_Titanic 2017.4.7：Titanic-1score：0.76555使用模型：RandomForestClassifier运行过程展示地址：https://ywtail.github.io/kaggle/1_Titanic/Titanic-1.html说明：titanic">
+
+
+
+
+
+
+  <link rel="canonical" href="http://ywtail.github.io/2017/06/19/Kaggle记录/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Kaggle记录 | ywtail's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ywtail's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ywtail.github.io/2017/06/19/Kaggle记录/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ywtail">
+      <meta itemprop="description" content="Be a man.">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ywtail's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kaggle记录
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-06-19 21:48:41" itemprop="dateCreated datePublished" datetime="2017-06-19T21:48:41+08:00">2017-06-19</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-26 23:19:41" itemprop="dateModified" datetime="2019-01-26T23:19:41+08:00">2019-01-26</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Kaggle/" itemprop="url" rel="index"><span itemprop="name">Kaggle</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <a href="/2017/06/19/Kaggle记录/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2017/06/19/Kaggle记录/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2017/06/19/Kaggle记录/" class="leancloud_visitors" data-flag-title="Kaggle记录">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Titanic"><a href="#Titanic" class="headerlink" title="Titanic"></a>Titanic</h2><p>代码地址：<a href="https://github.com/ywtail/kaggle/tree/master/1_Titanic" target="_blank" rel="noopener">https://github.com/ywtail/kaggle/tree/master/1_Titanic</a></p>
+<h3 id="2017-4-7：Titanic-1"><a href="#2017-4-7：Titanic-1" class="headerlink" title="2017.4.7：Titanic-1"></a>2017.4.7：Titanic-1</h3><p>score：<code>0.76555</code><br>使用模型：<code>RandomForestClassifier</code><br>运行过程展示地址：<a href="https://ywtail.github.io/kaggle/1_Titanic/Titanic-1.html">https://ywtail.github.io/kaggle/1_Titanic/Titanic-1.html</a><br>说明：titanic 初探，只简单对缺失数据进行了填充。使用 <code>GridSearchCV</code> 对参数进行了调整。</p>
+<h3 id="2017-6-22：Titanic-2"><a href="#2017-6-22：Titanic-2" class="headerlink" title="2017.6.22：Titanic-2"></a>2017.6.22：Titanic-2</h3><p>score：<code>0.76555</code> (后来提交分数越来越低)<br>使用模型：<code>RandomForestClassifier</code><br>运行过程展示地址：<a href="https://ywtail.github.io/kaggle/1_Titanic/Titanic-2.html">https://ywtail.github.io/kaggle/1_Titanic/Titanic-2.html</a><br>说明：简单特征工程，从 Name 得到 Title、从 Parch、SibSp 得到家庭人数，从 Age 等信息得到是不是 Child，是不是有 Child（预测时使用分数反而降低了），随机（[average - std, average + std]）生成了缺失的年龄。<br>参考：<a href="https://www.kaggle.com/mrisdal/exploring-survival-on-the-titanic" target="_blank" rel="noopener">https://www.kaggle.com/mrisdal/exploring-survival-on-the-titanic</a></p>
+<h3 id="2017-6-23：Titanic-3"><a href="#2017-6-23：Titanic-3" class="headerlink" title="2017.6.23：Titanic-3"></a>2017.6.23：Titanic-3</h3><p>score: <code>0.77033</code><br>运行过程展示地址：<a href="https://ywtail.github.io/kaggle/1_Titanic/Titanic-3.html">https://ywtail.github.io/kaggle/1_Titanic/Titanic-3.html</a><br>大体流程如下：</p>
+<ul>
+<li>删除不需要的项：PassengerId(训练数据中的)，Name，Ticket</li>
+<li>处理缺失数据：Embarked，Fare，Age，Cabin（缺失太多直接删除）</li>
+<li>特征工程：Family，Person，Pclass</li>
+</ul>
+<p>使用模型及提交后得分：</p>
+<ul>
+<li><code>LogisticRegression</code>：0.76077</li>
+<li><code>SVC</code>：0.61722</li>
+<li><code>RandomForestClassifier</code>：0.73206</li>
+<li><code>KNeighborsClassifier</code>：0.62201</li>
+<li><code>GaussianNB</code>：0.73206</li>
+<li><code>GradientBoostingClassifier</code>：0.77033</li>
+</ul>
+<p>参考：<a href="https://www.kaggle.com/omarelgabry/a-journey-through-titanic" target="_blank" rel="noopener">https://www.kaggle.com/omarelgabry/a-journey-through-titanic</a></p>
+<h3 id="2017-7-10：Titanic-4"><a href="#2017-7-10：Titanic-4" class="headerlink" title="2017.7.10：Titanic-4"></a>2017.7.10：Titanic-4</h3><p>score: <code>0.79426</code> (排名<code>1841/7167(26%)</code>)<br>运行过程展示地址：<a href="https://ywtail.github.io/kaggle/1_Titanic/Titanic-4.html">https://ywtail.github.io/kaggle/1_Titanic/Titanic-4.html</a><br>Age的缺失值填充参考了 Pclass 和 Sex；Age 和 Fare 分段。<br>使用模型及提交后得分：</p>
+<ul>
+<li><code>LogisticRegression</code>：0.76555</li>
+<li><code>SVC</code>：0.77990</li>
+<li><code>LinearSVC</code>：0.76555</li>
+<li><code>KNeighborsClassifier</code>：0.77033</li>
+<li><code>GaussianNB</code>：0.74163</li>
+<li><code>Perceptron</code>：0.75598</li>
+<li><code>SGDClassifier</code>：0.79426</li>
+<li><code>DecisionTreeClassifier</code>：0.78469</li>
+<li><code>RandomForestClassifier</code>：0.77990</li>
+<li><code>GradientBoostingClassifier</code>：0.79426</li>
+</ul>
+<p>参考：<a href="https://www.kaggle.com/startupsci/titanic-data-science-solutions" target="_blank" rel="noopener">https://www.kaggle.com/startupsci/titanic-data-science-solutions</a></p>
+<h2 id="Digit-Recognizer"><a href="#Digit-Recognizer" class="headerlink" title="Digit Recognizer"></a>Digit Recognizer</h2><p>Kaggle地址：<a href="https://www.kaggle.com/c/digit-recognizer" target="_blank" rel="noopener">https://www.kaggle.com/c/digit-recognizer</a><br>代码地址：<a href="https://github.com/ywtail/kaggle/tree/master/2_Digit_Recognizer" target="_blank" rel="noopener">https://github.com/ywtail/kaggle/tree/master/2_Digit_Recognizer</a></p>
+<h3 id="2017-7-26：1-SVC【0-90929】-ipynb"><a href="#2017-7-26：1-SVC【0-90929】-ipynb" class="headerlink" title="2017.7.26：1-SVC【0.90929】.ipynb"></a>2017.7.26：1-SVC【0.90929】.ipynb</h3><p>运行过程展示：点击<a href="https://ywtail.github.io/kaggle/2_Digit_Recognizer/1-SVC%E3%80%900.90929%E3%80%91.html">这里</a></p>
+<p>探索数据，流程如下：</p>
+<ul>
+<li>取5000个样本进行训练。</li>
+<li>特征缩放：大于1的特征取1。</li>
+<li>使用SVC，提交得分 0.90929</li>
+</ul>
+<h3 id="2017-8-3：2-softmax【0-90971】-ipynb"><a href="#2017-8-3：2-softmax【0-90971】-ipynb" class="headerlink" title="2017.8.3：2-softmax【0.90971】.ipynb"></a>2017.8.3：2-softmax【0.90971】.ipynb</h3><p>运行过程展示：点击<a href="https://ywtail.github.io/kaggle/2_Digit_Recognizer/2-Softmax+Regression%E3%80%900.90971%E3%80%91.html">这里</a></p>
+<p>y=softmax(xW+b)（特征缩放：特征/255）</p>
+<p>代价函数：交叉熵</p>
+<p>最小化代价函数：梯度下降 GradientDescentOptimizer，学习率0.01</p>
+<p>详细分析见：<a href="http://ywtail.github.io/2017/06/02/TensorFlow-2-Softmax-Regression%E8%AF%86%E5%88%AB%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97/">TensorFlow (2): Softmax Regression识别手写数字</a></p>
+<h3 id="2017-8-3：3-多层感知机-【0-96486】-ipynb"><a href="#2017-8-3：3-多层感知机-【0-96486】-ipynb" class="headerlink" title="2017.8.3：3-多层感知机 【0.96486】.ipynb"></a>2017.8.3：3-多层感知机 【0.96486】.ipynb</h3><p>运行过程展示：点击<a href="https://ywtail.github.io/kaggle/2_Digit_Recognizer/3-%E5%A4%9A%E5%B1%82%E6%84%9F%E7%9F%A5%E6%9C%BA+%E3%80%900.96486%E3%80%91.html">这里</a></p>
+<p>Softmax Regression 和传统意义上的神经网络的最大区别是没有隐含层。<br>这里实现的多层感知机实际上是在 Softmax Regression 的基础上加上一个隐含层。<br>结构如下：</p>
+<ul>
+<li>x=tf.placeholder(tf.float32,[None,784])</li>
+<li>hidden1=tf.nn.relu(tf.matmul(x,W1)+b1)</li>
+<li>hidden1_drop=tf.nn.dropout(hidden1,keep_prob)</li>
+<li>y=tf.nn.softmax(tf.matmul(hidden1_drop,W2)+b2)</li>
+<li>代价函数：交叉熵</li>
+<li>最小化代价函数：AdagradOptimizer，学习率0.01</li>
+</ul>
+<p>详细分析见：<a href="http://ywtail.github.io/2017/06/03/TensorFlow-3-%E5%A4%9A%E5%B1%82%E6%84%9F%E7%9F%A5%E6%9C%BA%E8%AF%86%E5%88%AB%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97/">TensorFlow (3): 多层感知机识别手写数字</a></p>
+<h3 id="2017-8-5：4-CNN-Tensorflow【0-98957】-ipynb"><a href="#2017-8-5：4-CNN-Tensorflow【0-98957】-ipynb" class="headerlink" title="2017.8.5：4-CNN-Tensorflow【0.98957】.ipynb"></a>2017.8.5：4-CNN-Tensorflow【0.98957】.ipynb</h3><p>运行过程展示：点击<a href="https://ywtail.github.io/kaggle/2_Digit_Recognizer/4-CNN-Tensorflow%E3%80%900.98957%E3%80%91.html">这里</a></p>
+<p>结构如下：</p>
+<ul>
+<li>x_image=tf.reshape(x,[-1,28,28,1])</li>
+<li>h_conv1=tf.nn.relu(conv2d(x_image,W_conv1)+b_conv1)</li>
+<li>h_pool1=max_pool_2x2(h_conv1)</li>
+<li>h_conv2=tf.nn.relu(conv2d(h_pool1,W_conv2)+b_conv2)</li>
+<li>h_pool2=max_pool_2x2(h_conv2)</li>
+<li>h_pool2_flat=tf.reshape(h_pool2,[-1,7<em>7</em>64])</li>
+<li>h_fc1=tf.nn.relu(tf.matmul(h_pool2_flat,W_fc1)+b_fc1)</li>
+<li>h_fc1_drop=tf.nn.dropout(h_fc1,keep_prob)</li>
+<li>y_conv=tf.nn.softmax(tf.matmul(h_fc1_drop,W_fc2)+b_fc2)</li>
+<li>代价函数：交叉熵</li>
+<li>最小化代价函数：AdamOptimizer，学习率1e-4</li>
+</ul>
+<p>详细分析见：<a href="http://ywtail.github.io/2017/06/05/TensorFlow-4-%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E8%AF%86%E5%88%AB%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97/">TensorFlow (4): 卷积神经网络识别手写数字</a></p>
+<h3 id="2017-8-6：5-CNN-Keras【0-99514】-ipynb"><a href="#2017-8-6：5-CNN-Keras【0-99514】-ipynb" class="headerlink" title="2017.8.6：5-CNN-Keras【0.99514】.ipynb"></a>2017.8.6：5-CNN-Keras【0.99514】.ipynb</h3><p>运行过程展示：点击<a href="https://ywtail.github.io/kaggle/2_Digit_Recognizer/5-CNN-Keras%E3%80%900.99514%E3%80%91.html">这里</a></p>
+<p>Top: 12%，198/1789</p>
+<p>参考：<a href="https://www.kaggle.com/toregil/welcome-to-deep-learning-cnn-99" target="_blank" rel="noopener">https://www.kaggle.com/toregil/welcome-to-deep-learning-cnn-99</a></p>
+<p>结构如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">model.add(Conv2D(filters = <span class="number">16</span>, kernel_size = (<span class="number">3</span>, <span class="number">3</span>), activation=<span class="string">'relu'</span>,</span><br><span class="line">                 input_shape = (<span class="number">28</span>, <span class="number">28</span>, <span class="number">1</span>)))</span><br><span class="line">model.add(BatchNormalization())</span><br><span class="line">model.add(Conv2D(filters = <span class="number">16</span>, kernel_size = (<span class="number">3</span>, <span class="number">3</span>), activation=<span class="string">'relu'</span>))</span><br><span class="line">model.add(BatchNormalization())</span><br><span class="line">model.add(MaxPool2D(strides=(<span class="number">2</span>,<span class="number">2</span>)))</span><br><span class="line">model.add(Dropout(<span class="number">0.25</span>))</span><br><span class="line"></span><br><span class="line">model.add(Conv2D(filters = <span class="number">32</span>, kernel_size = (<span class="number">3</span>, <span class="number">3</span>), activation=<span class="string">'relu'</span>))</span><br><span class="line">model.add(BatchNormalization())</span><br><span class="line">model.add(Conv2D(filters = <span class="number">32</span>, kernel_size = (<span class="number">3</span>, <span class="number">3</span>), activation=<span class="string">'relu'</span>))</span><br><span class="line">model.add(BatchNormalization())</span><br><span class="line">model.add(MaxPool2D(strides=(<span class="number">2</span>,<span class="number">2</span>)))</span><br><span class="line">model.add(Dropout(<span class="number">0.25</span>))</span><br><span class="line"></span><br><span class="line">model.add(Flatten())</span><br><span class="line">model.add(Dense(<span class="number">512</span>, activation=<span class="string">'relu'</span>))</span><br><span class="line">model.add(Dropout(<span class="number">0.25</span>))</span><br><span class="line">model.add(Dense(<span class="number">1024</span>, activation=<span class="string">'relu'</span>))</span><br><span class="line">model.add(Dropout(<span class="number">0.5</span>))</span><br><span class="line">model.add(Dense(<span class="number">10</span>, activation=<span class="string">'softmax'</span>))</span><br><span class="line"></span><br><span class="line">model.compile(loss=<span class="string">'categorical_crossentropy'</span>, optimizer = Adam(lr=<span class="number">1e-4</span>), metrics=[<span class="string">"accuracy"</span>])</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Kaggle/" rel="tag"># Kaggle</a>
+          
+            <a href="/tags/MachineLearning/" rel="tag"># MachineLearning</a>
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/09/TensorFlow-6-实现Word2Vec/" rel="next" title="TensorFlow (6): 实现Word2Vec">
+                <i class="fa fa-chevron-left"></i> TensorFlow (6): 实现Word2Vec
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/30/python-docx使用记录/" rel="prev" title="python-docx使用记录">
+                python-docx使用记录 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">ywtail</p>
+              <p class="site-description motion-element" itemprop="description">Be a man.</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Titanic"><span class="nav-number">1.</span> <span class="nav-text">Titanic</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-4-7：Titanic-1"><span class="nav-number">1.1.</span> <span class="nav-text">2017.4.7：Titanic-1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-6-22：Titanic-2"><span class="nav-number">1.2.</span> <span class="nav-text">2017.6.22：Titanic-2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-6-23：Titanic-3"><span class="nav-number">1.3.</span> <span class="nav-text">2017.6.23：Titanic-3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-7-10：Titanic-4"><span class="nav-number">1.4.</span> <span class="nav-text">2017.7.10：Titanic-4</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Digit-Recognizer"><span class="nav-number">2.</span> <span class="nav-text">Digit Recognizer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-7-26：1-SVC【0-90929】-ipynb"><span class="nav-number">2.1.</span> <span class="nav-text">2017.7.26：1-SVC【0.90929】.ipynb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-8-3：2-softmax【0-90971】-ipynb"><span class="nav-number">2.2.</span> <span class="nav-text">2017.8.3：2-softmax【0.90971】.ipynb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-8-3：3-多层感知机-【0-96486】-ipynb"><span class="nav-number">2.3.</span> <span class="nav-text">2017.8.3：3-多层感知机 【0.96486】.ipynb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-8-5：4-CNN-Tensorflow【0-98957】-ipynb"><span class="nav-number">2.4.</span> <span class="nav-text">2017.8.5：4-CNN-Tensorflow【0.98957】.ipynb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-8-6：5-CNN-Keras【0-99514】-ipynb"><span class="nav-number">2.5.</span> <span class="nav-text">2017.8.6：5-CNN-Keras【0.99514】.ipynb</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ywtail</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'Hn01Iq5tm1St1y55hF5K2M1P-gzGzoHsz',
+    appKey: 'VMAeg3KLjfddIO4nxJCqersc',
+    placeholder: '在此处输入评论',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+
+  
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log(`Failed to save Visitor num, with error message: ${responseJSON.error}`);
+              })
+          } else {
+            
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1 }))
+                .done(function() {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function() {
+                  console.log('Failed to create');
+                });
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log(`LeanCloud Counter Error: ${responseJSON.code} ${responseJSON.error}`);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'Hn01Iq5tm1St1y55hF5K2M1P-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'Hn01Iq5tm1St1y55hF5K2M1P-gzGzoHsz',
+                'X-LC-Key': 'VMAeg3KLjfddIO4nxJCqersc',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext">
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本文将逐步实现一个稍微复杂一些的卷积网络，简单的 MNIST 数据集已经不适合用来评测其性能，在这里我们将使用 CIFAR-10 数据集来进行训练。本文的结构安排如下  介绍 CIFAR-10 数据集 实现 CNN 在网络中加入 LRN 对权重进行 L2 正则化 总结和对比 给出完整代码和运行结果 列出参考资料  本文中涉及的所有代码均在 github.com/ywtail 中。 CIFAR-10">
+<meta name="keywords" content="MachineLearning,python,TensorFlow">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TensorFlow (5): CNN对CIFAR-10进行分类">
+<meta property="og:url" content="http://ywtail.github.io/2017/06/06/TensorFlow-5-CNN对CIFAR-10进行分类/index.html">
+<meta property="og:site_name" content="ywtail&#39;s blog">
+<meta property="og:description" content="本文将逐步实现一个稍微复杂一些的卷积网络，简单的 MNIST 数据集已经不适合用来评测其性能，在这里我们将使用 CIFAR-10 数据集来进行训练。本文的结构安排如下  介绍 CIFAR-10 数据集 实现 CNN 在网络中加入 LRN 对权重进行 L2 正则化 总结和对比 给出完整代码和运行结果 列出参考资料  本文中涉及的所有代码均在 github.com/ywtail 中。 CIFAR-10">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-01-26T15:19:41.956Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TensorFlow (5): CNN对CIFAR-10进行分类">
+<meta name="twitter:description" content="本文将逐步实现一个稍微复杂一些的卷积网络，简单的 MNIST 数据集已经不适合用来评测其性能，在这里我们将使用 CIFAR-10 数据集来进行训练。本文的结构安排如下  介绍 CIFAR-10 数据集 实现 CNN 在网络中加入 LRN 对权重进行 L2 正则化 总结和对比 给出完整代码和运行结果 列出参考资料  本文中涉及的所有代码均在 github.com/ywtail 中。 CIFAR-10">
+
+
+
+
+
+
+  <link rel="canonical" href="http://ywtail.github.io/2017/06/06/TensorFlow-5-CNN对CIFAR-10进行分类/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>TensorFlow (5): CNN对CIFAR-10进行分类 | ywtail's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ywtail's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ywtail.github.io/2017/06/06/TensorFlow-5-CNN对CIFAR-10进行分类/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ywtail">
+      <meta itemprop="description" content="Be a man.">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ywtail's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TensorFlow (5): CNN对CIFAR-10进行分类
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-06-06 19:30:29" itemprop="dateCreated datePublished" datetime="2017-06-06T19:30:29+08:00">2017-06-06</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-26 23:19:41" itemprop="dateModified" datetime="2019-01-26T23:19:41+08:00">2019-01-26</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/TensorFlow/" itemprop="url" rel="index"><span itemprop="name">TensorFlow</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <a href="/2017/06/06/TensorFlow-5-CNN对CIFAR-10进行分类/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2017/06/06/TensorFlow-5-CNN对CIFAR-10进行分类/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2017/06/06/TensorFlow-5-CNN对CIFAR-10进行分类/" class="leancloud_visitors" data-flag-title="TensorFlow (5): CNN对CIFAR-10进行分类">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将逐步实现一个稍微复杂一些的卷积网络，简单的 <code>MNIST</code> 数据集已经不适合用来评测其性能，在这里我们将使用 <code>CIFAR-10</code> 数据集来进行训练。<br>本文的结构安排如下</p>
+<ul>
+<li>介绍 <code>CIFAR-10</code> 数据集</li>
+<li>实现 CNN</li>
+<li>在网络中加入 LRN</li>
+<li>对权重进行 L2 正则化</li>
+<li>总结和对比</li>
+<li>给出完整代码和运行结果</li>
+<li>列出参考资料</li>
+</ul>
+<p>本文中涉及的所有代码均在 <a href="https://github.com/ywtail/TensorFlow/tree/master/5_CNN%E5%AF%B9CIFAR-10%E8%BF%9B%E8%A1%8C%E5%88%86%E7%B1%BB" target="_blank" rel="noopener">github.com/ywtail</a> 中。</p>
+<h3 id="CIFAR-10"><a href="#CIFAR-10" class="headerlink" title="CIFAR-10"></a>CIFAR-10</h3><p>本文使用的数据集是 <code>CIFAR-10</code>。这是一个经典的数据集，包含 60000 张 32x32 的彩色图像，其中训练集是 50000 张，测试集 10000 张。<code>CIFAR-10</code> 如同其名，一共标注为 10 类，每一类图片 6000 张，这 10 类分别是 <code>飞机， 汽车， 鸟， 猫， 鹿， 狗， 青蛙， 马， 船， 卡车</code>，其中没有任何重叠的情况，也不会在一张图片中同时出现两类物体。它还有一个兄弟版本 <code>CIFAR-100</code>，其中标注了 100 类。</p>
+<p><code>CIFAR-10</code> 数据集非常通用，对 <code>CIFAR-10</code> 数据集的分类是机器学习中一个公开的基准测试问题，其任务是对一组 32x32 RGB 的图像进行分类。许多论文中都在这个数据集上进行了测试，目前 <code>state-of-the-art</code> 的工作已经可以达到 3.5% 的错误率了，但是需要训练很久，即使在 GPU 上也需要十几个小时。据深度学习三巨头之一 LeCun 说，现有的卷积神经网络已经可以对 <code>CIFAR-10</code> 进行很好的学习，这个数据集的问题已经解决了。</p>
+<h3 id="实现-CNN"><a href="#实现-CNN" class="headerlink" title="实现 CNN"></a>实现 CNN</h3><p>在这里我们要实现的 CNN 网络结构如下表</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Layer 名称</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">conv1</td>
+<td style="text-align:left">卷积层，ReLU激活函数</td>
+</tr>
+<tr>
+<td style="text-align:center">pool1</td>
+<td style="text-align:left">最大池化</td>
+</tr>
+<tr>
+<td style="text-align:center">conv2</td>
+<td style="text-align:left">卷积层，ReLU激活函数</td>
+</tr>
+<tr>
+<td style="text-align:center">pool2</td>
+<td style="text-align:left">最大池化</td>
+</tr>
+<tr>
+<td style="text-align:center">local3</td>
+<td style="text-align:left">全连接层，ReLU激活函数</td>
+</tr>
+<tr>
+<td style="text-align:center">local4</td>
+<td style="text-align:left">全连接层，ReLU激活函数</td>
+</tr>
+<tr>
+<td style="text-align:center">logits</td>
+<td style="text-align:left">模型的输出</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="下载-TesorFlow-Models-库"><a href="#下载-TesorFlow-Models-库" class="headerlink" title="下载 TesorFlow Models 库"></a>下载 TesorFlow Models 库</h4><p>首先下载 TesorFlow Models 库，以便使用其中提供的 <code>CIFAR-10</code> 数据的类。在本文中构建模型的过程中，实际上只使用了 <code>cifar10_input.py</code> 和 <code>cifar10.py</code> 这两个文件。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/tensorflow/models.git</span><br></pre></td></tr></table></figure></p>
+<p>下载完后是一个名为 <code>models</code> 的文件夹，代码位于 <code>models/image/cifar10/</code>，文件组织结构如下</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://tensorflow.googlesource.com/tensorflow/+/master/tensorflow/models/image/cifar10/cifar10_input.py" target="_blank" rel="noopener"><code>cifar10_input.py</code></a></td>
+<td>读取本地CIFAR-10的二进制文件格式的内容。</td>
+</tr>
+<tr>
+<td><a href="https://tensorflow.googlesource.com/tensorflow/+/master/tensorflow/models/image/cifar10/cifar10.py" target="_blank" rel="noopener"><code>cifar10.py</code></a></td>
+<td>建立CIFAR-10的模型。</td>
+</tr>
+<tr>
+<td><a href="https://tensorflow.googlesource.com/tensorflow/+/master/tensorflow/models/image/cifar10/cifar10_train.py" target="_blank" rel="noopener"><code>cifar10_train.py</code></a></td>
+<td>在CPU或GPU上训练CIFAR-10的模型。</td>
+</tr>
+<tr>
+<td><a href="https://tensorflow.googlesource.com/tensorflow/+/master/tensorflow/models/image/cifar10/cifar10_multi_gpu_train.py" target="_blank" rel="noopener"><code>cifar10_multi_gpu_train.py</code></a></td>
+<td>在多GPU上训练CIFAR-10的模型。</td>
+</tr>
+<tr>
+<td><a href="https://tensorflow.googlesource.com/tensorflow/+/master/tensorflow/models/image/cifar10/cifar10_eval.py" target="_blank" rel="noopener"><code>cifar10_eval.py</code></a></td>
+<td>评估CIFAR-10模型的预测性能。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>可以通过 <code>cd models/tutorials/image/cifar10/</code> 在cifar10 文件夹下编写代码，也可以只将 cifar10 中的  <code>cifar10_input.py</code> 和 <code>cifar10.py</code> 拷贝出来。</p>
+<h4 id="加载数据"><a href="#加载数据" class="headerlink" title="加载数据"></a>加载数据</h4><p>这里需要调用下载的 <code>cifar10</code> 和 <code>cifar10_input</code> 类来对数据进行下载和处理，得到训练数据和测试数据。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 载入需要用的库</span></span><br><span class="line"><span class="keyword">import</span> cifar10, cifar10_input</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">data_dir = <span class="string">'cifar10_data/cifar-10-batches-bin'</span>  <span class="comment"># 下载 CIFAR-10 的默认路径</span></span><br><span class="line">cifar10.maybe_download_and_extract()  <span class="comment"># 下载数据集，并解压、展开到其默认位置</span></span><br></pre></td></tr></table></figure></p>
+<p>接下来使用 <code>cifar10_input</code> 类中的 <code>distorted_inputs</code> 函数产生训练需要使用的数据，包括特征及其对应的 label，这里返回的是已经封装好的 tensor，每次执行都会生成一个 batch_size 的数量的样本。 batch_size 需要作为参数输入，所以先设定 batch_size，并使用 <code>distorted_inputs</code> 产生训练需要使用的数据。</p>
+<blockquote>
+<p><code>distorted_inputs</code> 对数据进行了 <code>Data Augmentation</code>（数据增强），即采取了一系列随机变换的方法来人为的增加数据集的大小：</p>
+<ul>
+<li>对图像进行随机的左右翻转；</li>
+<li>随机变换图像的亮度；</li>
+<li>随机变换图像的对比度；</li>
+</ul>
+<p>通过这些操作可以获取更多的样本（带噪声的），原来的一张图片可以变为多张图片，相当于扩大样本量，对提高准确率非常有帮助。<br>从磁盘上加载图像并进行变换需要花费不少的处理时间。为了避免这些操作减慢训练过程，我们在 16 个独立的线程中并行进行这些操作，这16个线程被连续的安排在一个 TensorFlow 队列中（在训练过程中会启动线程队列）。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">batch_size=<span class="number">128</span></span><br><span class="line">images_train,labels_train=cifar10_input.distorted_inputs(data_dir=data_dir,batch_size=batch_size)</span><br></pre></td></tr></table></figure>
+<p>再使用 <code>cifar10_input.inputs</code> 生成测试数据，这里不需要进行太多处理，不需要对图片进行翻转或者修改亮度、对比度，不过需要剪裁图片正中间的 24x24 大小的区块，并进行数据标准化操作。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">images_test,labels_test=cifar10_input.inputs(eval_data=<span class="keyword">True</span>,data_dir=data_dir,batch_size=batch_size)</span><br></pre></td></tr></table></figure></p>
+<p>到此为止数据加载完毕，下面进行参数设置。</p>
+<h4 id="参数设置"><a href="#参数设置" class="headerlink" title="参数设置"></a>参数设置</h4><p>有些数据需要多次使用，所以写成函数。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">weight_variable</span><span class="params">(shape, stddev)</span>:</span></span><br><span class="line">    initial = tf.truncated_normal(shape, stddev=stddev)  <span class="comment"># stddev=stddev！！！</span></span><br><span class="line">    <span class="keyword">return</span> tf.Variable(initial)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bias_variable</span><span class="params">(cons, shape)</span>:</span></span><br><span class="line">    initial = tf.constant(cons, shape=shape)  <span class="comment"># 必须是 shape=shape</span></span><br><span class="line">    <span class="keyword">return</span> tf.Variable(initial)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">conv</span><span class="params">(x, W)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> tf.nn.conv2d(x, W, [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>], padding=<span class="string">'SAME'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">max_pool_3x3</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> tf.nn.max_pool(x, ksize=[<span class="number">1</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">1</span>], strides=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>], padding=<span class="string">'SAME'</span>)</span><br></pre></td></tr></table></figure></p>
+<h4 id="模型实现"><a href="#模型实现" class="headerlink" title="模型实现"></a>模型实现</h4><p>首先创建输入数据的 <code>placeholder</code>，在设定时需要注意，因为 <code>batch_size</code> 在之后定义的网络结构时被用到了，所以数据尺寸中的第一个值（样本条数）需要被预先设定，而不是像之前那样设定为 None。而数据尺寸中的图片尺寸为剪裁后的 24x24，因为图片是彩色 RGB 图片，所以通道数为 3。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">image_holder = tf.placeholder(tf.float32, [batch_size, <span class="number">24</span>, <span class="number">24</span>, <span class="number">3</span>])</span><br><span class="line">label_holder = tf.placeholder(tf.int32, [batch_size])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 第一层</span></span><br><span class="line">weight1 = weight_variable([<span class="number">5</span>, <span class="number">5</span>, <span class="number">3</span>, <span class="number">64</span>], <span class="number">5e-2</span>)</span><br><span class="line">bias1 = bias_variable(<span class="number">0.0</span>, [<span class="number">64</span>])</span><br><span class="line"></span><br><span class="line">conv1 = tf.nn.relu(conv(image_holder, weight1) + bias1)</span><br><span class="line">pool1 = max_pool_3x3(conv1)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 第二层</span></span><br><span class="line">weight2 = weight_variable([<span class="number">5</span>, <span class="number">5</span>, <span class="number">64</span>, <span class="number">64</span>], <span class="number">5e-2</span>)</span><br><span class="line">bias2 = bias_variable(<span class="number">0.1</span>, [<span class="number">64</span>])</span><br><span class="line"></span><br><span class="line">conv2 = tf.nn.relu(conv(pool1, weight2) + bias2)</span><br><span class="line">pool2 = max_pool_3x3(conv2)</span><br><span class="line"></span><br><span class="line">reshape = tf.reshape(pool2, [batch_size, <span class="number">-1</span>])</span><br><span class="line">dim = reshape.get_shape()[<span class="number">1</span>].value</span><br><span class="line"></span><br><span class="line"><span class="comment"># 全连接层</span></span><br><span class="line">weight3 = weight_variable([dim, <span class="number">384</span>], <span class="number">0.04</span>)</span><br><span class="line">bias3 = bias_variable(<span class="number">0.1</span>, [<span class="number">384</span>])</span><br><span class="line"></span><br><span class="line">local3 = tf.nn.relu(tf.matmul(reshape, weight3) + bias3)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 全连接层</span></span><br><span class="line">weight4 = weight_variable([<span class="number">384</span>, <span class="number">192</span>], <span class="number">0.04</span>)</span><br><span class="line">bias4 = bias_variable(<span class="number">0.1</span>, [<span class="number">192</span>])</span><br><span class="line"></span><br><span class="line">local4 = tf.nn.relu(tf.matmul(local3, weight4) + bias4)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line">weight5 = weight_variable([<span class="number">192</span>, <span class="number">10</span>], <span class="number">1</span> / <span class="number">192.0</span>)</span><br><span class="line">bias5 = bias_variable(<span class="number">0.0</span>, [<span class="number">10</span>])</span><br><span class="line">logits = tf.matmul(local4, weight5) + bias5</span><br></pre></td></tr></table></figure></p>
+<h4 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h4><p>依然使用 <code>cross_entropy</code> 作为损失函数，不同的是在这里将 <code>cross_entropy</code> 的计算和 <code>softmax</code> 的计算混合在了一起，使用 <code>tf.nn.sparse_softmax_cross_entropy_with_logits</code>。然后将 cross_entropy 的均值添加到 <code>total_loss</code> 的 <code>collection</code> 中（后面会加入 L2 正则，所以计算 <code>total_loss</code>）。最后，使用 <code>tf.add_n</code> 将 <code>collection</code> 中的 loss 全部求和，得到最终的 loss。</p>
+<p>优化器使用 <code>Adam Optimizer</code>。</p>
+<p>使用 <code>tf.nn.in_top_k</code> 函数输出结果中 top k 的准确率，默认使用 top 1，也就是输出分数最高的那一类的准确率。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 损失函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss</span><span class="params">(logits, labels)</span>:</span></span><br><span class="line">    labels = tf.cast(labels, tf.int64)</span><br><span class="line">    cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits, labels=labels,</span><br><span class="line">                                                                   name=<span class="string">'cross_entropy_per_example'</span>)</span><br><span class="line">    cross_entropy_mean = tf.reduce_mean(cross_entropy, name=<span class="string">'cross_entropy'</span>)</span><br><span class="line">    tf.add_to_collection(<span class="string">'losses'</span>, cross_entropy_mean)</span><br><span class="line">    <span class="keyword">return</span> tf.add_n(tf.get_collection(<span class="string">'losses'</span>), name=<span class="string">'total_loss'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">loss = loss(logits, label_holder)</span><br><span class="line">train_op = tf.train.AdamOptimizer(<span class="number">1e-3</span>).minimize(loss)</span><br><span class="line">top_k_op = tf.nn.in_top_k(logits, label_holder, <span class="number">1</span>)</span><br></pre></td></tr></table></figure></p>
+<h4 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h4><p>如下代码中的第三行启动前面提到的图片数据增强的线程队列，这里一共使用了 16 个线程来进行加速。注意，如果这里不启动线程，那么后续的 inference 及训练的操作都是无法开启的。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sess = tf.InteractiveSession()</span><br><span class="line">tf.global_variables_initializer().run()</span><br><span class="line">tf.train.start_queue_runners()</span><br><span class="line"></span><br><span class="line">max_steps = <span class="number">3000</span></span><br><span class="line"><span class="keyword">for</span> step <span class="keyword">in</span> range(max_steps):</span><br><span class="line">    start_time = time.time()</span><br><span class="line">    image_batch, label_batch = sess.run([images_train, labels_train])</span><br><span class="line">    _, loss_value = sess.run([train_op, loss], feed_dict=&#123;image_holder: image_batch, label_holder: label_batch&#125;)</span><br><span class="line">    duration = time.time() - start_time</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> step % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">        examples_per_sec = batch_size / duration</span><br><span class="line">        sec_per_batch = float(duration)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">print</span> <span class="string">'step &#123;&#125;,loss=&#123;&#125;,(&#123;&#125; examples/sec; &#123;&#125; sec/batch)'</span>.format(step, loss_value, examples_per_sec, sec_per_batch)</span><br></pre></td></tr></table></figure></p>
+<h4 id="评测准确率"><a href="#评测准确率" class="headerlink" title="评测准确率"></a>评测准确率</h4><p>测试集一共有 10000 个样本，但是需要注意的是，我们依然要像训练时哪样使用固定的 batch_size，然后一个 batch 一个batch 地输入测试数据。</p>
+<ul>
+<li>计算一共要多少个 batch 才能将全部样本测试完</li>
+<li>在每一个 step 中使用 session 的 run 方法获取 <code>images_test</code>、<code>labels_test</code> 的 batch，再执行 <code>top_k_op</code> 计算模型在这个 batch 的 top 1 上预测正确的样本数。</li>
+<li>汇总所有预测正确的结果，求得全部测试样本中预测正确的数量</li>
+<li>求准确率的评测结果并打印</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">num_examples = <span class="number">10000</span></span><br><span class="line">num_iter = int(math.ceil(num_examples / batch_size))  <span class="comment"># 计算一共有多少组</span></span><br><span class="line">true_count = <span class="number">0</span></span><br><span class="line">total_sample_count = num_iter * batch_size</span><br><span class="line">step = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> step &lt; num_iter:</span><br><span class="line">    image_batch, label_batch = sess.run([images_test, labels_test])</span><br><span class="line">    predictions = sess.run([top_k_op], feed_dict=&#123;image_holder: image_batch, label_holder: label_batch&#125;)</span><br><span class="line">    true_count += np.sum(predictions)</span><br><span class="line">    step += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">precision = true_count / total_sample_count</span><br><span class="line"><span class="keyword">print</span> <span class="string">'precision = '</span>, precision</span><br></pre></td></tr></table></figure>
+<p>运行结果为准确率 74.56%。<br>实现的代码见 <a href="https://github.com/ywtail/TensorFlow/tree/master/5_CNN%E5%AF%B9CIFAR-10%E8%BF%9B%E8%A1%8C%E5%88%86%E7%B1%BB" target="_blank" rel="noopener">github.com/ywtail</a> 中的 <code>cnn.py</code> 文件。</p>
+<h3 id="加入-LRN"><a href="#加入-LRN" class="headerlink" title="加入 LRN"></a>加入 LRN</h3><p>LRN 最早见于 Alex 那篇用 CNN 参加 <code>ImageNet</code> 比赛的论文，Alex 在论文中解释 LRN 层模仿了生物神经系统的“侧抑制”机制，对局部神经元的活动创建竞争环境，使得其中相应比较大的值变得相对更大，并抑制其他反馈较小的神经元，增强了模型的泛化能力。Alex 在 <code>ImageNet</code> 数据集上的实验表明，使用 LRN 后 CNN 在 Top1 的错误率可以降低 1.4%，因此在其经典的 <code>AlexNet</code> 中使用 LRN 层。LRN 对 ReLU 这种没有上限边界的激活函数会比较有用，因为它会从附近的多个卷积核的相应（Response）中挑选比较大的反馈，但不适合 <code>Sigmoid</code> 这种有固定边界并且能抑制过大值的激活函数。<br>尝试加入 LRN，增强模型泛化能力。现在网络结构如下表</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Layer 名称</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">conv1</td>
+<td style="text-align:left">卷积层，ReLU激活函数</td>
+</tr>
+<tr>
+<td style="text-align:center">pool1</td>
+<td style="text-align:left">最大池化</td>
+</tr>
+<tr>
+<td style="text-align:center">norm1</td>
+<td style="text-align:left">LRN</td>
+</tr>
+<tr>
+<td style="text-align:center">conv2</td>
+<td style="text-align:left">卷积层，ReLU激活函数</td>
+</tr>
+<tr>
+<td style="text-align:center">norm2</td>
+<td style="text-align:left">LRN</td>
+</tr>
+<tr>
+<td style="text-align:center">pool2</td>
+<td style="text-align:left">最大池化</td>
+</tr>
+<tr>
+<td style="text-align:center">local3</td>
+<td style="text-align:left">全连接层，ReLU激活函数</td>
+</tr>
+<tr>
+<td style="text-align:center">local4</td>
+<td style="text-align:left">全连接层，ReLU激活函数</td>
+</tr>
+<tr>
+<td style="text-align:center">logits</td>
+<td style="text-align:left">模型的输出</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>在上述 CNN 中加入 LRN，准确率 73.90%。<br>实现的代码见 <a href="https://github.com/ywtail/TensorFlow/tree/master/5_CNN%E5%AF%B9CIFAR-10%E8%BF%9B%E8%A1%8C%E5%88%86%E7%B1%BB" target="_blank" rel="noopener">github.com/ywtail</a> 中的 <code>cnn_lrn.py</code> 文件。</p>
+<h3 id="对权重进行-L2-正则化"><a href="#对权重进行-L2-正则化" class="headerlink" title="对权重进行 L2 正则化"></a>对权重进行 L2 正则化</h3><p>为了避免过拟合，在神经网络中使用 L2 正则化。</p>
+<p>在机器学习中，不管是分类还是回归任务，都可能因特征过多而导致过拟合，一般可以通过减少特征或者惩罚不重要特征的权重来缓解这个问题。但是通常我们并不知道该惩罚哪些特征的权重，而正则化就是帮助我们惩罚特征权重的，即 <strong>特征的权重也会成为模型损失函数的一部分</strong>。这样我们就可以筛选出最有效的特征，减少特征权重防止过拟合。</p>
+<p>一般来说，L1 正则会制造稀疏的特征，大部分无用特征的权重会被置为 0，而L2 正则会让特征的权重不过大，使得特征的权重比较平均。</p>
+<p>在定义初始化 weight 的函数时，像之前一样使用 <code>tf.truncated_normal</code> 截断的正态分布来处理初始化权重。与之前不同的是，给权重设置函数加一个参数 w1，如果 w1 不等于 0，就给 <code>weight</code> 加上一个 L2 的 loss，相当于做了一个 L2 的正则化处理。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">weight_variable</span><span class="params">(shape, stddev, w1)</span>:</span></span><br><span class="line">    var = tf.Variable(tf.truncated_normal(shape, stddev=stddev))  <span class="comment"># stddev=stddev！！！</span></span><br><span class="line">    <span class="keyword">if</span> w1:</span><br><span class="line">        weight_loss = tf.multiply(tf.nn.l2_loss(var), w1, name=<span class="string">'weight_loss'</span>)</span><br><span class="line">        tf.add_to_collection(<span class="string">'losses'</span>, weight_loss)</span><br><span class="line">    <span class="keyword">return</span> var</span><br></pre></td></tr></table></figure>
+<p>修改好这个函数后，将两个全连接层 weight 设置的第三个参数改为不为 0 的数。例如：<code>weight3 = weight_variable([dim, 384], 0.04, 0.004)</code><br>实现的代码见 <a href="https://github.com/ywtail/TensorFlow/tree/master/5_CNN%E5%AF%B9CIFAR-10%E8%BF%9B%E8%A1%8C%E5%88%86%E7%B1%BB" target="_blank" rel="noopener">github.com/ywtail</a> 中的 <code>cnn_l2.py</code> 文件。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本文中实现的卷积神经网络没有那么复杂，在只使用 3000 个batch（每个batch 包含 128 个样本）时，设计的 CNN 模型在 CIFAR-10 数据集中分类的准确率为 74.56%；在 CNN 的基础上增加了 LRN，准确率 73.90%；如果对全连接层的权重进行 L2 正则化，准确率 70.30%；同时增加了 LRN，并对全连接层的权重进行了 L2 正则化，准确率 71.90%。具体见下表</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">网络结构</th>
+<th style="text-align:left">说明</th>
+<th style="text-align:center">准确率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">CNN</td>
+<td style="text-align:left">只有卷积层、池化层、全连接层</td>
+<td style="text-align:center">74.56%</td>
+</tr>
+<tr>
+<td style="text-align:left">CNN+L2</td>
+<td style="text-align:left">对全连接层的 weights 进行了 L2 的正则化</td>
+<td style="text-align:center">70.30%</td>
+</tr>
+<tr>
+<td style="text-align:left">CNN+LRN</td>
+<td style="text-align:left">在每个卷积-最大池化层中使用了 LRN 层</td>
+<td style="text-align:center">73.90%</td>
+</tr>
+<tr>
+<td style="text-align:left">CNN+LRN+L2</td>
+<td style="text-align:left">同时使用 LRN 层和 L2 的正则化</td>
+<td style="text-align:center">71.90%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>在这个卷积神经网络中，我们使用了一些新的技巧。</p>
+<ul>
+<li>对 weights 进行了 L2 的正则化</li>
+<li>对图片进行了翻转、随机剪切等数据增强，制造了更多样本（下载的 TesorFlow Models 库中的 <code>cifar10_input.distorted_inputs</code> 函数）</li>
+<li>在每个卷积-最大池化层中使用了 LRN 层，增强了模型的泛化能力</li>
+</ul>
+<p>卷积层一般需要和一个池化层连接，卷积加池化的组合目前已经是做图像处理时的一个标准组件了。卷积网络最后的几个全连接层的作用是输出分类结果，前面的卷积层主要做特征提取的工作，直到最后的全连接层才开始对特征进行组合匹配，并进行分类。</p>
+<p>可以观察到，其实设计 CNN 主要就是安排卷积层、池化层、全连接层的分布和顺序，以及其中超参数的设置、Trick 的使用等。设计性能良好的 CNN 是有一定规律可循的，但是想要针对某个问题设计最合适的网络结构，是需要大量实践摸索的。</p>
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><p>以下是在 CNN 中同时增加了 LRN，并对全连接层的权重进行了 L2 正则化的代码，其他相关代码参见 <a href="https://github.com/ywtail/TensorFlow/tree/master/5_CNN%E5%AF%B9CIFAR-10%E8%BF%9B%E8%A1%8C%E5%88%86%E7%B1%BB" target="_blank" rel="noopener">github.com/ywtail</a><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="comment"># cnn_l2_lrn</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> division</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> cifar10, cifar10_input</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">data_dir = <span class="string">'cifar10_data/cifar-10-batches-bin'</span>  <span class="comment"># 下载 CIFAR-10 的默认路径</span></span><br><span class="line">cifar10.maybe_download_and_extract()  <span class="comment"># 下载数据集，并解压、展开到其默认位置</span></span><br><span class="line"></span><br><span class="line">batch_size = <span class="number">128</span></span><br><span class="line">images_train, labels_train = cifar10_input.distorted_inputs(data_dir=data_dir, batch_size=batch_size)</span><br><span class="line"></span><br><span class="line">images_test, labels_test = cifar10_input.inputs(eval_data=<span class="keyword">True</span>, data_dir=data_dir, batch_size=batch_size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">weight_variable</span><span class="params">(shape, stddev, w1)</span>:</span></span><br><span class="line">    var = tf.Variable(tf.truncated_normal(shape, stddev=stddev))  <span class="comment"># stddev=stddev！！！</span></span><br><span class="line">    <span class="keyword">if</span> w1:</span><br><span class="line">        weight_loss = tf.multiply(tf.nn.l2_loss(var), w1, name=<span class="string">'weight_loss'</span>)</span><br><span class="line">        tf.add_to_collection(<span class="string">'losses'</span>, weight_loss)</span><br><span class="line">    <span class="keyword">return</span> var</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bias_variable</span><span class="params">(cons, shape)</span>:</span></span><br><span class="line">    initial = tf.constant(cons, shape=shape)  <span class="comment"># 必须是 shape=shape</span></span><br><span class="line">    <span class="keyword">return</span> tf.Variable(initial)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">conv</span><span class="params">(x, W)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> tf.nn.conv2d(x, W, [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>], padding=<span class="string">'SAME'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">max_pool_3x3</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> tf.nn.max_pool(x, ksize=[<span class="number">1</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">1</span>], strides=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>], padding=<span class="string">'SAME'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">image_holder = tf.placeholder(tf.float32, [batch_size, <span class="number">24</span>, <span class="number">24</span>, <span class="number">3</span>])</span><br><span class="line">label_holder = tf.placeholder(tf.int32, [batch_size])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 第一层</span></span><br><span class="line">weight1 = weight_variable([<span class="number">5</span>, <span class="number">5</span>, <span class="number">3</span>, <span class="number">64</span>], <span class="number">5e-2</span>, <span class="number">0.0</span>)</span><br><span class="line">bias1 = bias_variable(<span class="number">0.0</span>, [<span class="number">64</span>])</span><br><span class="line"></span><br><span class="line">conv1 = tf.nn.relu(conv(image_holder, weight1) + bias1)</span><br><span class="line">pool1 = max_pool_3x3(conv1)</span><br><span class="line">norm1 = tf.nn.lrn(pool1, <span class="number">4</span>, bias=<span class="number">1.0</span>, alpha=<span class="number">0.001</span> / <span class="number">9.0</span>, beta=<span class="number">0.75</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 第二层</span></span><br><span class="line">weight2 = weight_variable([<span class="number">5</span>, <span class="number">5</span>, <span class="number">64</span>, <span class="number">64</span>], <span class="number">5e-2</span>, <span class="number">0.0</span>)</span><br><span class="line">bias2 = bias_variable(<span class="number">0.1</span>, [<span class="number">64</span>])</span><br><span class="line"></span><br><span class="line">conv2 = tf.nn.relu(conv(norm1, weight2) + bias2)</span><br><span class="line">norm2 = tf.nn.lrn(conv2, <span class="number">4</span>, bias=<span class="number">1.0</span>, alpha=<span class="number">0.001</span> / <span class="number">9.0</span>, beta=<span class="number">0.75</span>)</span><br><span class="line">pool2 = max_pool_3x3(norm2)</span><br><span class="line"></span><br><span class="line">reshape = tf.reshape(pool2, [batch_size, <span class="number">-1</span>])</span><br><span class="line">dim = reshape.get_shape()[<span class="number">1</span>].value</span><br><span class="line"></span><br><span class="line"><span class="comment"># 全连接层</span></span><br><span class="line">weight3 = weight_variable([dim, <span class="number">384</span>], <span class="number">0.04</span>, <span class="number">0.004</span>)</span><br><span class="line">bias3 = bias_variable(<span class="number">0.1</span>, [<span class="number">384</span>])</span><br><span class="line"></span><br><span class="line">local3 = tf.nn.relu(tf.matmul(reshape, weight3) + bias3)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 全连接层</span></span><br><span class="line">weight4 = weight_variable([<span class="number">384</span>, <span class="number">192</span>], <span class="number">0.04</span>, <span class="number">0.004</span>)</span><br><span class="line">bias4 = bias_variable(<span class="number">0.1</span>, [<span class="number">192</span>])</span><br><span class="line"></span><br><span class="line">local4 = tf.nn.relu(tf.matmul(local3, weight4) + bias4)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line">weight5 = weight_variable([<span class="number">192</span>, <span class="number">10</span>], <span class="number">1</span> / <span class="number">192.0</span>, <span class="number">0.0</span>)</span><br><span class="line">bias5 = bias_variable(<span class="number">0.0</span>, [<span class="number">10</span>])</span><br><span class="line">logits = tf.matmul(local4, weight5) + bias5</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 损失函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss</span><span class="params">(logits, labels)</span>:</span></span><br><span class="line">    labels = tf.cast(labels, tf.int64)</span><br><span class="line">    cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits, labels=labels,</span><br><span class="line">                                                                   name=<span class="string">'cross_entropy_per_example'</span>)</span><br><span class="line">    cross_entropy_mean = tf.reduce_mean(cross_entropy, name=<span class="string">'cross_entropy'</span>)</span><br><span class="line">    tf.add_to_collection(<span class="string">'losses'</span>, cross_entropy_mean)</span><br><span class="line">    <span class="keyword">return</span> tf.add_n(tf.get_collection(<span class="string">'losses'</span>), name=<span class="string">'total_loss'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">loss = loss(logits, label_holder)</span><br><span class="line">train_op = tf.train.AdamOptimizer(<span class="number">1e-3</span>).minimize(loss)</span><br><span class="line">top_k_op = tf.nn.in_top_k(logits, label_holder, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">sess = tf.InteractiveSession()</span><br><span class="line">tf.global_variables_initializer().run()</span><br><span class="line">tf.train.start_queue_runners()</span><br><span class="line"></span><br><span class="line">max_steps = <span class="number">3000</span></span><br><span class="line"><span class="keyword">for</span> step <span class="keyword">in</span> range(max_steps):</span><br><span class="line">    start_time = time.time()</span><br><span class="line">    image_batch, label_batch = sess.run([images_train, labels_train])</span><br><span class="line">    _, loss_value = sess.run([train_op, loss], feed_dict=&#123;image_holder: image_batch, label_holder: label_batch&#125;)</span><br><span class="line">    duration = time.time() - start_time</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> step % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">        examples_per_sec = batch_size / duration</span><br><span class="line">        sec_per_batch = float(duration)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">print</span> <span class="string">'step &#123;&#125;,loss=&#123;&#125;,(&#123;&#125; examples/sec; &#123;&#125; sec/batch)'</span>.format(step, loss_value, examples_per_sec,</span><br><span class="line">                                                                       sec_per_batch)</span><br><span class="line">num_examples = <span class="number">10000</span></span><br><span class="line">num_iter = int(math.ceil(num_examples / batch_size))  <span class="comment"># 计算一共有多少组</span></span><br><span class="line">true_count = <span class="number">0</span></span><br><span class="line">total_sample_count = num_iter * batch_size</span><br><span class="line">step = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> step &lt; num_iter:</span><br><span class="line">    image_batch, label_batch = sess.run([images_test, labels_test])</span><br><span class="line">    predictions = sess.run([top_k_op], feed_dict=&#123;image_holder: image_batch, label_holder: label_batch&#125;)</span><br><span class="line">    true_count += np.sum(predictions)</span><br><span class="line">    step += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">precision = true_count / total_sample_count</span><br><span class="line"><span class="keyword">print</span> <span class="string">'precision = '</span>, precision</span><br></pre></td></tr></table></figure></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li>图书：TensorFlow实战 / 黄文坚，唐源著</li>
+<li>TensorFlow 中文社区：<a href="http://www.tensorfly.cn/tfdoc/tutorials/deep_cnn.html" target="_blank" rel="noopener">卷积神经网络</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MachineLearning/" rel="tag"># MachineLearning</a>
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/TensorFlow/" rel="tag"># TensorFlow</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/05/TensorFlow-4-卷积神经网络识别手写数字/" rel="next" title="TensorFlow (4): 卷积神经网络识别手写数字">
+                <i class="fa fa-chevron-left"></i> TensorFlow (4): 卷积神经网络识别手写数字
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/07/Git常见问题及解决方案/" rel="prev" title="Git常见问题及解决方案">
+                Git常见问题及解决方案 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">ywtail</p>
+              <p class="site-description motion-element" itemprop="description">Be a man.</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#CIFAR-10"><span class="nav-number">1.</span> <span class="nav-text">CIFAR-10</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现-CNN"><span class="nav-number">2.</span> <span class="nav-text">实现 CNN</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#下载-TesorFlow-Models-库"><span class="nav-number">2.1.</span> <span class="nav-text">下载 TesorFlow Models 库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加载数据"><span class="nav-number">2.2.</span> <span class="nav-text">加载数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参数设置"><span class="nav-number">2.3.</span> <span class="nav-text">参数设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模型实现"><span class="nav-number">2.4.</span> <span class="nav-text">模型实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#损失函数"><span class="nav-number">2.5.</span> <span class="nav-text">损失函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#训练"><span class="nav-number">2.6.</span> <span class="nav-text">训练</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#评测准确率"><span class="nav-number">2.7.</span> <span class="nav-text">评测准确率</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加入-LRN"><span class="nav-number">3.</span> <span class="nav-text">加入 LRN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对权重进行-L2-正则化"><span class="nav-number">4.</span> <span class="nav-text">对权重进行 L2 正则化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完整代码"><span class="nav-number">6.</span> <span class="nav-text">完整代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ywtail</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'Hn01Iq5tm1St1y55hF5K2M1P-gzGzoHsz',
+    appKey: 'VMAeg3KLjfddIO4nxJCqersc',
+    placeholder: '在此处输入评论',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+
+  
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log(`Failed to save Visitor num, with error message: ${responseJSON.error}`);
+              })
+          } else {
+            
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1 }))
+                .done(function() {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function() {
+                  console.log('Failed to create');
+                });
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log(`LeanCloud Counter Error: ${responseJSON.code} ${responseJSON.error}`);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'Hn01Iq5tm1St1y55hF5K2M1P-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'Hn01Iq5tm1St1y55hF5K2M1P-gzGzoHsz',
+                'X-LC-Key': 'VMAeg3KLjfddIO4nxJCqersc',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
