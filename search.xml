@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[leetcode-238-除自身以外数组的乘积]]></title>
+    <url>%2F2019%2F03%2F05%2Fleetcode-238-%E9%99%A4%E8%87%AA%E8%BA%AB%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF%2F</url>
+    <content type="text"><![CDATA[题目链接除自身以外数组的乘积 题目描述给定长度为 n 的整数数组 nums，其中 n &gt; 1，返回输出数组 output ，其中 output[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积。 示例: 12输入: [1,2,3,4]输出: [24,12,8,6] 说明: 请不要使用除法，且在 O(n) 时间复杂度内完成此题。 进阶：你可以在常数空间复杂度内完成这个题目吗？（ 出于对空间复杂度分析的目的，输出数组不被视为额外空间。） 解答方法一使用除法，注意有0的情况 123456789101112131415161718192021222324252627class Solution(object): def productExceptSelf(self, nums): """ :type nums: List[int] :rtype: List[int] """ n = len(nums) mul = 1 zero_cnt = 0 for i in range(n): if nums[i] == 0: zero_cnt += 1 if zero_cnt &gt; 1: # 2个0的情况 return [0] * n continue mul *= nums[i] ans = [] if zero_cnt &gt; 0: # 1个0的情况 for i in range(n): if nums[i] == 0: ans.append(mul) else: ans.append(0) return ans for i in range(n): # 没有0的情况 ans.append(mul // nums[i]) return ans]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>leetcode</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[ML实战记录]]></title>
     <url>%2F2019%2F03%2F01%2FML%E5%AE%9E%E6%88%98%E8%AE%B0%E5%BD%95%2F</url>
     <content type="text"><![CDATA[详细过程见达观杯文本智能处理]]></content>
@@ -8,8 +20,8 @@
         <category>MachineLearning</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
       </tags>
   </entry>
   <entry>
@@ -227,8 +239,8 @@
         <category>Machine Learning</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
       </tags>
   </entry>
   <entry>
@@ -292,9 +304,9 @@
         <category>Kaggle</category>
       </categories>
       <tags>
+        <tag>python</tag>
         <tag>Kaggle</tag>
         <tag>MachineLearning</tag>
-        <tag>python</tag>
       </tags>
   </entry>
   <entry>
@@ -305,8 +317,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -341,8 +353,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -354,8 +366,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -380,8 +392,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -393,8 +405,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -466,8 +478,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
