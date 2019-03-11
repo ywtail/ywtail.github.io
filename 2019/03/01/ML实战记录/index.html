@@ -122,19 +122,19 @@
 
 
 
-  <meta name="description" content="详细过程见达观杯文本智能处理 提交记录">
-<meta name="keywords" content="python,MachineLearning">
+  <meta name="description" content="详细过程见达观杯文本智能处理 提交记录  使用LSTM（Long short-term memory, LSTM），lstm参数(https://keras.io/zh/layers/recurrent/) 1keras.layers.LSTM(units, activation=&apos;tanh&apos;, recurrent_activation=&apos;hard_sigmoid&apos;, use_bias=True,">
+<meta name="keywords" content="MachineLearning,python">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ML实战记录">
 <meta property="og:url" content="http://ywtail.github.io/2019/03/01/ML实战记录/index.html">
 <meta property="og:site_name" content="ywtail&#39;s blog">
-<meta property="og:description" content="详细过程见达观杯文本智能处理 提交记录">
+<meta property="og:description" content="详细过程见达观杯文本智能处理 提交记录  使用LSTM（Long short-term memory, LSTM），lstm参数(https://keras.io/zh/layers/recurrent/) 1keras.layers.LSTM(units, activation=&apos;tanh&apos;, recurrent_activation=&apos;hard_sigmoid&apos;, use_bias=True,">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://ywtail.github.io/images/达观杯文本智能处理提交记录.jpg">
-<meta property="og:updated_time" content="2019-03-09T13:59:49.645Z">
+<meta property="og:updated_time" content="2019-03-11T13:46:21.996Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ML实战记录">
-<meta name="twitter:description" content="详细过程见达观杯文本智能处理 提交记录">
+<meta name="twitter:description" content="详细过程见达观杯文本智能处理 提交记录  使用LSTM（Long short-term memory, LSTM），lstm参数(https://keras.io/zh/layers/recurrent/) 1keras.layers.LSTM(units, activation=&apos;tanh&apos;, recurrent_activation=&apos;hard_sigmoid&apos;, use_bias=True,">
 <meta name="twitter:image" content="http://ywtail.github.io/images/达观杯文本智能处理提交记录.jpg">
 
 
@@ -440,7 +440,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-03-09 21:59:49" itemprop="dateModified" datetime="2019-03-09T21:59:49+08:00">2019-03-09</time>
+                <time title="修改时间：2019-03-11 21:46:21" itemprop="dateModified" datetime="2019-03-11T21:46:21+08:00">2019-03-11</time>
               
             
           </span>
@@ -518,6 +518,41 @@
         <p>详细过程见<a href="https://github.com/ywtail/ML/blob/master/Datawhale/%E8%BE%BE%E8%A7%82%E6%9D%AF%E6%96%87%E6%9C%AC%E6%99%BA%E8%83%BD%E5%A4%84%E7%90%86.ipynb" target="_blank" rel="noopener">达观杯文本智能处理</a></p>
 <p>提交记录</p>
 <p><img src="/images/达观杯文本智能处理提交记录.jpg" alt="达观杯文本智能处理提交记录"></p>
+<p>使用LSTM（Long short-term memory, LSTM），lstm参数(<a href="https://keras.io/zh/layers/recurrent/" target="_blank" rel="noopener">https://keras.io/zh/layers/recurrent/</a>)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.LSTM(units, activation=<span class="string">'tanh'</span>, recurrent_activation=<span class="string">'hard_sigmoid'</span>, use_bias=<span class="keyword">True</span>, kernel_initializer=<span class="string">'glorot_uniform'</span>, recurrent_initializer=<span class="string">'orthogonal'</span>, bias_initializer=<span class="string">'zeros'</span>, unit_forget_bias=<span class="keyword">True</span>, kernel_regularizer=<span class="keyword">None</span>, recurrent_regularizer=<span class="keyword">None</span>, bias_regularizer=<span class="keyword">None</span>, activity_regularizer=<span class="keyword">None</span>, kernel_constraint=<span class="keyword">None</span>, recurrent_constraint=<span class="keyword">None</span>, bias_constraint=<span class="keyword">None</span>, dropout=<span class="number">0.0</span>, recurrent_dropout=<span class="number">0.0</span>, implementation=<span class="number">1</span>, return_sequences=<span class="keyword">False</span>, return_state=<span class="keyword">False</span>, go_backwards=<span class="keyword">False</span>, stateful=<span class="keyword">False</span>, unroll=<span class="keyword">False</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>参数</strong></p>
+<ul>
+<li><strong>units</strong>: 正整数，输出空间的维度。</li>
+<li><strong>activation</strong>: 要使用的激活函数 (详见 <a href="https://keras.io/zh/activations/" target="_blank" rel="noopener">activations</a>)。 如果传入 <code>None</code>，则不使用激活函数 (即 线性激活：<code>a(x) = x</code>)。</li>
+<li><strong>recurrent_activation</strong>: 用于循环时间步的激活函数 (详见 <a href="https://keras.io/zh/activations/" target="_blank" rel="noopener">activations</a>)。 默认：分段线性近似 sigmoid (<code>hard_sigmoid</code>)。 如果传入 <code>None</code>，则不使用激活函数 (即 线性激活：<code>a(x) = x</code>)。</li>
+<li><strong>use_bias</strong>: 布尔值，该层是否使用偏置向量。</li>
+<li><strong>kernel_initializer</strong>: <code>kernel</code> 权值矩阵的初始化器， 用于输入的线性转换 (详见 <a href="https://keras.io/zh/initializers/" target="_blank" rel="noopener">initializers</a>)。</li>
+<li><strong>recurrent_initializer</strong>: <code>recurrent_kernel</code> 权值矩阵 的初始化器，用于循环层状态的线性转换 (详见 <a href="https://keras.io/zh/initializers/" target="_blank" rel="noopener">initializers</a>)。</li>
+<li><strong>bias_initializer</strong>:偏置向量的初始化器 (详见<a href="https://keras.io/zh/initializers/" target="_blank" rel="noopener">initializers</a>).</li>
+<li><strong>unit_forget_bias</strong>: 布尔值。 如果为 True，初始化时，将忘记门的偏置加 1。 将其设置为 True 同时还会强制 <code>bias_initializer=&quot;zeros&quot;</code>。 这个建议来自 <a href="http://www.jmlr.org/proceedings/papers/v37/jozefowicz15.pdf" target="_blank" rel="noopener">Jozefowicz et al.</a>。</li>
+<li><strong>kernel_regularizer</strong>: 运用到 <code>kernel</code> 权值矩阵的正则化函数 (详见 <a href="https://keras.io/zh/regularizers/" target="_blank" rel="noopener">regularizer</a>)。</li>
+<li><strong>recurrent_regularizer</strong>: 运用到 <code>recurrent_kernel</code> 权值矩阵的正则化函数 (详见 <a href="https://keras.io/zh/regularizers/" target="_blank" rel="noopener">regularizer</a>)。</li>
+<li><strong>bias_regularizer</strong>: 运用到偏置向量的正则化函数 (详见 <a href="https://keras.io/zh/regularizers/" target="_blank" rel="noopener">regularizer</a>)。</li>
+<li><strong>activity_regularizer</strong>: 运用到层输出（它的激活值）的正则化函数 (详见 <a href="https://keras.io/zh/regularizers/" target="_blank" rel="noopener">regularizer</a>)。</li>
+<li><strong>kernel_constraint</strong>: 运用到 <code>kernel</code> 权值矩阵的约束函数 (详见 <a href="https://keras.io/zh/constraints/" target="_blank" rel="noopener">constraints</a>)。</li>
+<li><strong>recurrent_constraint</strong>: 运用到 <code>recurrent_kernel</code> 权值矩阵的约束函数 (详见 <a href="https://keras.io/zh/constraints/" target="_blank" rel="noopener">constraints</a>)。</li>
+<li><strong>bias_constraint</strong>: 运用到偏置向量的约束函数 (详见 <a href="https://keras.io/zh/constraints/" target="_blank" rel="noopener">constraints</a>)。</li>
+<li><strong>dropout</strong>: 在 0 和 1 之间的浮点数。 单元的丢弃比例，用于输入的线性转换。</li>
+<li><strong>recurrent_dropout</strong>: 在 0 和 1 之间的浮点数。 单元的丢弃比例，用于循环层状态的线性转换。</li>
+<li><strong>implementation</strong>: 实现模式，1 或 2。 模式 1 将把它的操作结构化为更多的小的点积和加法操作， 而模式 2 将把它们分批到更少，更大的操作中。 这些模式在不同的硬件和不同的应用中具有不同的性能配置文件。</li>
+<li><strong>return_sequences</strong>: 布尔值。是返回输出序列中的最后一个输出，还是全部序列。</li>
+<li><strong>return_state</strong>: 布尔值。除了输出之外是否返回最后一个状态。</li>
+<li><strong>go_backwards</strong>: 布尔值 (默认 False)。 如果为 True，则向后处理输入序列并返回相反的序列。</li>
+<li><strong>stateful</strong>: 布尔值 (默认 False)。 如果为 True，则批次中索引 i 处的每个样品的最后状态 将用作下一批次中索引 i 样品的初始状态。</li>
+<li><strong>unroll</strong>: 布尔值 (默认 False)。 如果为 True，则网络将展开，否则将使用符号循环。 展开可以加速 RNN，但它往往会占用更多的内存。 展开只适用于短序列。</li>
+</ul>
+<p>代码参考：<a href="https://github.com/Heitao5200/DGB/blob/master/model/model_code/RCNN.py" target="_blank" rel="noopener">https://github.com/Heitao5200/DGB/blob/master/model/model_code/RCNN.py</a></p>
+<p>数据处理，输入为中心词、左词和右词</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">X_train_word_ids = tokenizer.texts_to_sequences(X_train)</span><br><span class="line">X_test_word_ids = tokenizer.texts_to_sequences(X_test)</span><br><span class="line"></span><br><span class="line">X_train_padded_seqs = pad_sequences(X_train_word_ids, maxlen=doc_len)</span><br><span class="line">X_test_padded_seqs = pad_sequences(X_test_word_ids, maxlen=doc_len)</span><br><span class="line"></span><br><span class="line">left_train_word_ids = [[len(vocab)] + x[:<span class="number">-1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> X_train_word_ids]</span><br><span class="line">left_test_word_ids = [[len(vocab)] + x[:<span class="number">-1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> X_test_word_ids]</span><br><span class="line">right_train_word_ids = [x[<span class="number">1</span>:] + [len(vocab)] <span class="keyword">for</span> x <span class="keyword">in</span> X_train_word_ids]</span><br><span class="line">right_test_word_ids = [x[<span class="number">1</span>:] + [len(vocab)] <span class="keyword">for</span> x <span class="keyword">in</span> X_test_word_ids]</span><br><span class="line"></span><br><span class="line">left_train_padded_seqs = pad_sequences(left_train_word_ids, maxlen=doc_len)</span><br><span class="line">left_test_padded_seqs = pad_sequences(left_test_word_ids, maxlen=doc_len)</span><br><span class="line">right_train_padded_seqs = pad_sequences(right_train_word_ids, maxlen=doc_len)</span><br><span class="line">right_test_padded_seqs = pad_sequences(right_test_word_ids, maxlen=doc_len)</span><br><span class="line"></span><br><span class="line">document = Input(shape = (doc_len, ), dtype = <span class="string">"int32"</span>)</span><br><span class="line">left_context = Input(shape = (doc_len, ), dtype = <span class="string">"int32"</span>)</span><br><span class="line">right_context = Input(shape = (doc_len, ), dtype = <span class="string">"int32"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># embedding</span></span><br><span class="line">embedder = Embedding(len(vocab) + <span class="number">1</span>, embedding_dim, input_length = doc_len)</span><br><span class="line">doc_embedding = embedder(document)</span><br><span class="line">l_embedding = embedder(left_context)</span><br><span class="line">r_embedding = embedder(right_context)</span><br></pre></td></tr></table></figure>
+<p>构建模型</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">forward = LSTM(<span class="number">256</span>, return_sequences = <span class="keyword">True</span>)(l_embedding)</span><br><span class="line">backward = LSTM(<span class="number">256</span>, return_sequences = <span class="keyword">True</span>, go_backwards = <span class="keyword">True</span>)(r_embedding)</span><br><span class="line">together = concatenate([forward, doc_embedding, backward], axis = <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">semantic = TimeDistributed(Dense(<span class="number">128</span>, activation = <span class="string">"tanh"</span>))(together)</span><br><span class="line">pool_rnn = Lambda(<span class="keyword">lambda</span> x: backend.max(x, axis = <span class="number">1</span>), output_shape = (<span class="number">128</span>, ))(semantic)</span><br><span class="line">output = Dense(<span class="number">19</span>, activation = <span class="string">"softmax"</span>)(pool_rnn) </span><br><span class="line">model = Model(inputs = [document, left_context, right_context], outputs = output)</span><br><span class="line"></span><br><span class="line">model.compile(loss=<span class="string">'categorical_crossentropy'</span>,</span><br><span class="line">              optimizer=<span class="string">'adam'</span>,</span><br><span class="line">              metrics=[<span class="string">'accuracy'</span>])</span><br><span class="line"></span><br><span class="line">model.fit([X_train_padded_seqs, left_train_padded_seqs, right_train_padded_seqs],y_train,</span><br><span class="line">           batch_size=<span class="number">32</span>,</span><br><span class="line">           epochs=<span class="number">1</span>,</span><br><span class="line">           validation_data=([X_test_padded_seqs, left_test_padded_seqs, right_test_padded_seqs], y_test))</span><br></pre></td></tr></table></figure>
+<p>评价及预测</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">score = model.evaluate(X_test_padded_seqs, y_test, verbose=<span class="number">0</span>)</span><br><span class="line">print(<span class="string">'Test loss:'</span>, score[<span class="number">0</span>])</span><br><span class="line">print(<span class="string">'Test accuracy:'</span>, score[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment">## 特征转换</span></span><br><span class="line">xx_test_word_ids = tokenizer.texts_to_sequences(df_test[<span class="string">'word_seg'</span>])</span><br><span class="line">xx_test_padded_seqs = pad_sequences(xx_test_word_ids, maxlen=doc_len)</span><br><span class="line"></span><br><span class="line"><span class="comment">## 预测</span></span><br><span class="line">pred_prob = model.predict(xx_test_padded_seqs)</span><br><span class="line">pred = pred_prob.argmax(axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -541,9 +576,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/python/" rel="tag"># python</a>
-          
             <a href="/tags/MachineLearning/" rel="tag"># MachineLearning</a>
+          
+            <a href="/tags/python/" rel="tag"># python</a>
           
         </div>
       
