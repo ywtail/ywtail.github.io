@@ -131,7 +131,7 @@
 <meta property="og:description" content="详细过程见达观杯文本智能处理 提交记录  使用LSTM（Long short-term memory, LSTM），lstm参数(https://keras.io/zh/layers/recurrent/) 1keras.layers.LSTM(units, activation=&apos;tanh&apos;, recurrent_activation=&apos;hard_sigmoid&apos;, use_bias=True,">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://ywtail.github.io/images/达观杯文本智能处理提交记录.jpg">
-<meta property="og:updated_time" content="2019-03-11T13:46:21.996Z">
+<meta property="og:updated_time" content="2019-03-12T13:52:18.632Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ML实战记录">
 <meta name="twitter:description" content="详细过程见达观杯文本智能处理 提交记录  使用LSTM（Long short-term memory, LSTM），lstm参数(https://keras.io/zh/layers/recurrent/) 1keras.layers.LSTM(units, activation=&apos;tanh&apos;, recurrent_activation=&apos;hard_sigmoid&apos;, use_bias=True,">
@@ -440,7 +440,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-03-11 21:46:21" itemprop="dateModified" datetime="2019-03-11T21:46:21+08:00">2019-03-11</time>
+                <time title="修改时间：2019-03-12 21:52:18" itemprop="dateModified" datetime="2019-03-12T21:52:18+08:00">2019-03-12</time>
               
             
           </span>
@@ -553,6 +553,28 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">forward = LSTM(<span class="number">256</span>, return_sequences = <span class="keyword">True</span>)(l_embedding)</span><br><span class="line">backward = LSTM(<span class="number">256</span>, return_sequences = <span class="keyword">True</span>, go_backwards = <span class="keyword">True</span>)(r_embedding)</span><br><span class="line">together = concatenate([forward, doc_embedding, backward], axis = <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">semantic = TimeDistributed(Dense(<span class="number">128</span>, activation = <span class="string">"tanh"</span>))(together)</span><br><span class="line">pool_rnn = Lambda(<span class="keyword">lambda</span> x: backend.max(x, axis = <span class="number">1</span>), output_shape = (<span class="number">128</span>, ))(semantic)</span><br><span class="line">output = Dense(<span class="number">19</span>, activation = <span class="string">"softmax"</span>)(pool_rnn) </span><br><span class="line">model = Model(inputs = [document, left_context, right_context], outputs = output)</span><br><span class="line"></span><br><span class="line">model.compile(loss=<span class="string">'categorical_crossentropy'</span>,</span><br><span class="line">              optimizer=<span class="string">'adam'</span>,</span><br><span class="line">              metrics=[<span class="string">'accuracy'</span>])</span><br><span class="line"></span><br><span class="line">model.fit([X_train_padded_seqs, left_train_padded_seqs, right_train_padded_seqs],y_train,</span><br><span class="line">           batch_size=<span class="number">32</span>,</span><br><span class="line">           epochs=<span class="number">1</span>,</span><br><span class="line">           validation_data=([X_test_padded_seqs, left_test_padded_seqs, right_test_padded_seqs], y_test))</span><br></pre></td></tr></table></figure>
 <p>评价及预测</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">score = model.evaluate(X_test_padded_seqs, y_test, verbose=<span class="number">0</span>)</span><br><span class="line">print(<span class="string">'Test loss:'</span>, score[<span class="number">0</span>])</span><br><span class="line">print(<span class="string">'Test accuracy:'</span>, score[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment">## 特征转换</span></span><br><span class="line">xx_test_word_ids = tokenizer.texts_to_sequences(df_test[<span class="string">'word_seg'</span>])</span><br><span class="line">xx_test_padded_seqs = pad_sequences(xx_test_word_ids, maxlen=doc_len)</span><br><span class="line"></span><br><span class="line"><span class="comment">## 预测</span></span><br><span class="line">pred_prob = model.predict(xx_test_padded_seqs)</span><br><span class="line">pred = pred_prob.argmax(axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>模型融合</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">models = [KNeighborsClassifier(n_neighbors=<span class="number">5</span>,n_jobs = <span class="number">-1</span>),RandomForestClassifier(random_state=<span class="number">0</span>, n_jobs=<span class="number">-1</span>,n_estimators = <span class="number">100</span>, max_depth = <span class="number">3</span>),XGBClassifier(random_state=<span class="number">0</span>, n_jobs=<span class="number">-1</span>, learning_rate=<span class="number">0.1</span>,n_estimators = <span class="number">100</span>, max_depth = <span class="number">3</span>)]</span><br><span class="line"></span><br><span class="line">S_train, S_test = stacking(models, X_train, y_train, X_test, regression=<span class="keyword">False</span>, mode=<span class="string">'oof_pred_bag'</span>, needs_proba=<span class="keyword">False</span>, save_dir=<span class="keyword">None</span>, metric=accuracy_score, n_folds=<span class="number">4</span>, stratified=<span class="keyword">True</span>, shuffle=<span class="keyword">True</span>, random_state=<span class="number">0</span>, verbose=<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<p>各参数含义如下</p>
+<blockquote>
+<p>The stacking function takes several inputs:</p>
+</blockquote>
+<ul>
+<li><strong>models</strong>: the first level models we defined earlier</li>
+<li><strong>X_train, y_train, X_test</strong>: our data</li>
+<li><strong>regression</strong>: Boolean indicating whether we want to use the function for regression. In our case set to False since this is a classification</li>
+<li><strong>mode:</strong> using the earlier describe out-of-fold during cross-validation</li>
+<li><strong>needs_proba</strong>: Boolean indicating whether you need the probabilities of class labels</li>
+<li><strong>save_dir</strong>: save the result to directory Boolean</li>
+<li><strong>metric</strong>: what evaluation metric to use (we imported the accuracy_score in the beginning)</li>
+<li><strong>n_folds</strong>: how many folds to use for cross-validation</li>
+<li><strong>stratified</strong>: whether to use stratified cross-validation</li>
+<li><strong>shuffle</strong>: whether to shuffle the data</li>
+<li><strong>random_state</strong>: setting a random state for reproducibility</li>
+<li><strong>verbose</strong>: 2 here refers to printing all info</li>
+</ul>
+<p>最终使用XGB预测</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">model = XGBClassifier(random_state=<span class="number">0</span>, n_jobs=<span class="number">-1</span>, learning_rate=<span class="number">0.1</span>, n_estimators=<span class="number">100</span>, max_depth=<span class="number">3</span>) </span><br><span class="line">model = model.fit(S_train, y_train) </span><br><span class="line">y_pred = model.predict(S_test)</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -668,7 +690,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">56</span>
+                    <span class="site-state-item-count">57</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -707,7 +729,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">13</span>
+                      
+                    
+                    <span class="site-state-item-count">14</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -758,7 +782,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">19</span>
+                      
+                    
+                    <span class="site-state-item-count">20</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext">
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="增建表 重要的数据建表最好为externel ，在drop表时，不会drop对应hadoop文件，在重新create table后能够快速恢复数据。 可以显示指定format为orc，注意最后3行顺序 location可以不写，但是建完后需要检测存储路径是否和预期一致  12345678910111213create [external]    table if not exists app.te">
+<meta name="keywords" content="hive">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hive常用命令">
+<meta property="og:url" content="http://ywtail.github.io/2019/03/31/hive常用命令/index.html">
+<meta property="og:site_name" content="ywtail&#39;s blog">
+<meta property="og:description" content="增建表 重要的数据建表最好为externel ，在drop表时，不会drop对应hadoop文件，在重新create table后能够快速恢复数据。 可以显示指定format为orc，注意最后3行顺序 location可以不写，但是建完后需要检测存储路径是否和预期一致  12345678910111213create [external]    table if not exists app.te">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-04-01T05:16:03.758Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hive常用命令">
+<meta name="twitter:description" content="增建表 重要的数据建表最好为externel ，在drop表时，不会drop对应hadoop文件，在重新create table后能够快速恢复数据。 可以显示指定format为orc，注意最后3行顺序 location可以不写，但是建完后需要检测存储路径是否和预期一致  12345678910111213create [external]    table if not exists app.te">
+
+
+
+
+
+
+  <link rel="canonical" href="http://ywtail.github.io/2019/03/31/hive常用命令/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>hive常用命令 | ywtail's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ywtail's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ywtail.github.io/2019/03/31/hive常用命令/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ywtail">
+      <meta itemprop="description" content="Be a man.">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ywtail's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">hive常用命令
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-31 11:42:34" itemprop="dateCreated datePublished" datetime="2019-03-31T11:42:34+08:00">2019-03-31</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-01 13:16:03" itemprop="dateModified" datetime="2019-04-01T13:16:03+08:00">2019-04-01</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/hive/" itemprop="url" rel="index"><span itemprop="name">hive</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <a href="/2019/03/31/hive常用命令/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/03/31/hive常用命令/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/03/31/hive常用命令/" class="leancloud_visitors" data-flag-title="hive常用命令">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="增"><a href="#增" class="headerlink" title="增"></a>增</h2><h3 id="建表"><a href="#建表" class="headerlink" title="建表"></a>建表</h3><ul>
+<li>重要的数据建表最好为externel ，在drop表时，不会drop对应hadoop文件，在重新create table后能够快速恢复数据。</li>
+<li>可以显示指定format为orc，注意最后3行顺序</li>
+<li>location可以不写，但是建完后需要检测存储路径是否和预期一致</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> [<span class="keyword">external</span>]</span><br><span class="line">    <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> app.test</span><br><span class="line">    (</span><br><span class="line">        sku <span class="keyword">string</span>,</span><br><span class="line">        csku <span class="keyword">string</span></span><br><span class="line">    )</span><br><span class="line">    partitioned <span class="keyword">by</span></span><br><span class="line">    (</span><br><span class="line">        dt <span class="keyword">string</span></span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">stored</span> <span class="keyword">as</span> orc</span><br><span class="line">    location <span class="string">'xxxx/app.db/test'</span></span><br><span class="line">    tblproperties (<span class="string">'orc.compress'</span>=<span class="string">'SNAPPY'</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="增加字段-列"><a href="#增加字段-列" class="headerlink" title="增加字段(列)"></a>增加字段(列)</h3><ul>
+<li>添加字段(在所有存在的列后面，但是在分区列之前添加一个字段)<ul>
+<li>不添加说明：<br><code>alter table 表名 add columns (字段名 字段数据类型, 字段名 字段数据类型)</code></li>
+<li>添加说明：<br><code>alter table 表名 add columns (字段名 字段数据类型 comment &#39;字段说明&#39;, 字段名 字段数据类型 comment &#39;字段说明&#39;)</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="增加表记录"><a href="#增加表记录" class="headerlink" title="增加表记录"></a>增加表记录</h3><ul>
+<li>添加一条记录：<code>insert into 表名(字段名[，字段名]) values(&#39;值&#39;[,&#39;值&#39;]);</code></li>
+<li><p>或使用select</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> 表名(字段名[，字段名]) </span><br><span class="line"><span class="keyword">select</span> ‘...’</span><br></pre></td></tr></table></figure>
+<p>使用insert into向表中追加数据，可能追加的数据与表中已有的数据相同，不会覆盖，因此会出现相同的两条记录。</p>
+</li>
+<li>添加记录（同记录覆盖）<br>使用insert overwrite<br>注意 <code>insert overwrite table 表名 select…..</code><br>table不能省略。<br>会将之前的记录全部删除，即时与追加的记录不同</li>
+</ul>
+<h3 id="增加分区"><a href="#增加分区" class="headerlink" title="增加分区"></a>增加分区</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> table_name <span class="keyword">ADD</span> <span class="keyword">PARTITION</span> (partCol = <span class="string">'value1'</span>) location <span class="string">'loc1'</span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">-- 一次添加一个分区</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> table_name <span class="keyword">ADD</span> <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> <span class="keyword">PARTITION</span> (dt=<span class="string">'20130101'</span>) LOCATION <span class="string">'/user/hadoop/warehouse/table_name/dt=20130101'</span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">-- 一次添加多个分区</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> page_view <span class="keyword">ADD</span> <span class="keyword">PARTITION</span> (dt=<span class="string">'2008-08-08'</span>, country=<span class="string">'us'</span>) location <span class="string">'/path/to/us/part080808'</span> <span class="keyword">PARTITION</span> (dt=<span class="string">'2008-08-09'</span>, country=<span class="string">'us'</span>) location <span class="string">'/path/to/us/part080809'</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="删"><a href="#删" class="headerlink" title="删"></a>删</h2><h3 id="删除表格"><a href="#删除表格" class="headerlink" title="删除表格"></a>删除表格</h3><ul>
+<li>删除表格：<code>drop table 表名;</code></li>
+<li>删除所有记录（行），不删除表结构<br><code>truncate table 表名;</code></li>
+</ul>
+<h3 id="删除分区"><a href="#删除分区" class="headerlink" title="删除分区"></a>删除分区</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE login DROP IF EXISTS PARTITION (dt=<span class="string">'2008-08-08'</span>);</span><br><span class="line"></span><br><span class="line">ALTER TABLE page_view DROP IF EXISTS PARTITION (dt=<span class="string">'2008-08-08'</span>, country=<span class="string">'us'</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="删外部表数据"><a href="#删外部表数据" class="headerlink" title="删外部表数据"></a>删外部表数据</h3><p>外部表，直接<code>rm -r hdfs</code>数据，对表<code>show partitions $table_name</code> 分区依然存在只是没有数据。</p>
+<p>使用<code>alter table app.app_discovery_content_info_da_tag drop partition (dt=&#39;${drop_dt}&#39;)</code>，<code>show partitions $table_name</code>分区不存在，但是<code>hadoop fs -ls</code> 路径，改分区数据依然存在。</p>
+<p>方案一：</p>
+<p>将表改为内部表<code>external =false</code>，删分区（hdfs数据会删掉），再改回为外部表<code>external=True</code>。</p>
+<p>方案二：</p>
+<p>先删分区，再用rm -r删数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE some.table DROP PARTITION (part=&quot;some&quot;)</span><br><span class="line">hdfs dfs -rm -R /path/to/table/basedir</span><br></pre></td></tr></table></figure>
+<p>方案二存在问题：原本打算将-rm操作放在index_builder中，但是现builder是在rec账号下，没有权限删除路径在recpro下的数据。</p>
+<p>所以，最终选方案一，更安全，简洁。</p>
+<h2 id="改"><a href="#改" class="headerlink" title="改"></a>改</h2><h3 id="修改表记录"><a href="#修改表记录" class="headerlink" title="修改表记录"></a>修改表记录</h3><ul>
+<li><code>update</code> 修改表记录<ul>
+<li><code>UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值</code></li>
+<li>例如 <code>update tt set name=&#39;Joe&#39;, salary=70000, managerid=3 where id=1;</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="修改字段名-列名"><a href="#修改字段名-列名" class="headerlink" title="修改字段名(列名)"></a>修改字段名(列名)</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> test_change (a <span class="built_in">int</span>, b <span class="built_in">int</span>, c <span class="built_in">int</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 修改列名a为a1</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> test_change <span class="keyword">CHANGE</span> a a1 <span class="built_in">INT</span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">-- 修改列名a为a1，将a1的数据类型置为string，并将a1放在b列后</span></span><br><span class="line"><span class="comment">-- 表的新结构： b int, a1 string, c int</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> test_change <span class="keyword">CHANGE</span> a a1 <span class="keyword">STRING</span> <span class="keyword">AFTER</span> b; </span><br><span class="line"></span><br><span class="line"><span class="comment">-- 修改列名b为b1，并将其置为第一列</span></span><br><span class="line"><span class="comment">-- 表的新结构： b1 int, a string, c int</span></span><br><span class="line"> <span class="keyword">ALTER</span> <span class="keyword">TABLE</span> test_change <span class="keyword">CHANGE</span> b b1 <span class="built_in">INT</span> <span class="keyword">FIRST</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="修改表属性"><a href="#修改表属性" class="headerlink" title="修改表属性"></a>修改表属性</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 内部表转外部表 </span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> table_name <span class="keyword">set</span> TBLPROPERTIES (<span class="string">'EXTERNAL'</span>=<span class="string">'TRUE'</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment">-- 外部表转内部表</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> table_name <span class="keyword">set</span> TBLPROPERTIES (<span class="string">'EXTERNAL'</span>=<span class="string">'FALSE'</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="表的重命名"><a href="#表的重命名" class="headerlink" title="表的重命名"></a>表的重命名</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> table_name <span class="keyword">RENAME</span> <span class="keyword">TO</span> new_table_name</span><br></pre></td></tr></table></figure>
+<h3 id="修改分区"><a href="#修改分区" class="headerlink" title="修改分区"></a>修改分区</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE table_name PARTITION (dt=<span class="string">'2008-08-08'</span>) SET LOCATION <span class="string">"new location"</span>;</span><br><span class="line"></span><br><span class="line">ALTER TABLE table_name PARTITION (dt=<span class="string">'2008-08-08'</span>) RENAME TO PARTITION (dt=<span class="string">'20080808'</span>);</span><br><span class="line"></span><br><span class="line">-- 将19分区修改到18(外部表的location可能不会变，待验证)</span><br><span class="line">alter table app.xxxx partition(dt=<span class="string">'2019-01-19'</span>) rename to partition(dt=<span class="string">'2019-01-18'</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="修改location"><a href="#修改location" class="headerlink" title="修改location"></a>修改location</h3><p>一般location在create table if not exist后，不会被触发，而如果删除表则会删除location，因此如果新建表的location错误指向了已经存在的location，需要手动修改新表location</p>
+<ul>
+<li>命令行新建location目录： <code>hadoop fs -mkdir &#39;hdfs://ns9/user/recsys/recpro/app.db/index_qrqm_sku_info_basic_new&#39;</code></li>
+<li><code>hive</code></li>
+<li><code>alter table 表名 set locaion &#39;hdfs://ns9/user/recsys/recpro/app.db/index_qrqm_sku_info_basic_new&#39;</code></li>
+<li>验证：<code>show create table 表名</code>查看LOCATION是否更新</li>
+</ul>
+<h2 id="查"><a href="#查" class="headerlink" title="查"></a>查</h2><h3 id="常用查询语句"><a href="#常用查询语句" class="headerlink" title="常用查询语句"></a>常用查询语句</h3><ul>
+<li>查看表字段介绍： <code>desc 表名</code></li>
+<li>select列名:<a href="https://stackoverflow.com/questions/26181454/just-get-column-names-from-hive-table" target="_blank" rel="noopener">https://stackoverflow.com/questions/26181454/just-get-column-names-from-hive-table</a><br><code>show columns in 表名</code></li>
+<li>查某一列：<code>select 列名 from 表名</code></li>
+<li><code>order by</code> 排序(string类型字典序，数值类型按大小排)<ul>
+<li><code>order by colname</code> 默认升序</li>
+<li><code>order by colname desc</code> 降序</li>
+</ul>
+</li>
+<li><code>limit</code> 返回对应行<ul>
+<li><code>SELECT * FROM table LIMIT 3;</code> 返回前3行</li>
+<li><code>SELECT * FROM table LIMIT 0,3;</code> 返回前3行</li>
+<li><code>SELECT * FROM table LIMIT 5,10;</code> // 从第6行开始，最多返回10行（可能后面的数据不到10行）。即检索记录行 6-15</li>
+<li><code>SELECT * FROM table LIMIT 95,-1;</code> // 检索记录行 96-last</li>
+</ul>
+</li>
+<li>空值数计算：<code>select sum(if(a is null,1,0)) from ...</code></li>
+<li>空值率计算：<code>select avg(if(a is null,1,0)) from ...</code></li>
+<li>查询某个字段按字符分割后长度：<code>size(split(sim_recall,&#39;,&#39;))</code></li>
+<li>直接查看表信息<ul>
+<li>通过执行log：<code>Table 表名 stats: [numFiles=4, numRows=623232, totalSize=234324, rawDataSize=32243]</code></li>
+<li>通过explain (发现有时通过这种方式查看numRows和count(*)结果不一致)</li>
+</ul>
+</li>
+<li>sql的模糊匹配 <ul>
+<li>%：表示任意0个或多个字符。可匹配任意类型和长度的字符<br><code>select distinct * from app.xxxxxx where tb_name like &#39;app.xxx%&#39;;</code>中<code>%</code>不能少(匹配<em>a等)</em></li>
+<li><code>_</code>： 表示任意单个字符。匹配单个任意字符</li>
+</ul>
+</li>
+</ul>
+<h3 id="查询重复的项"><a href="#查询重复的项" class="headerlink" title="查询重复的项"></a>查询重复的项</h3><ul>
+<li>定位重复行可先group by，记录下count，再对count排序，选count&gt;1的</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">sku</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">(</span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">sku, <span class="keyword">count</span>(*) <span class="keyword">as</span> cnt</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">app.xxxx</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> sku</span><br><span class="line">)a</span><br><span class="line"><span class="keyword">where</span> a.cnt &gt; <span class="number">1</span> <span class="keyword">order</span> <span class="keyword">by</span> cnt <span class="keyword">desc</span> <span class="keyword">limit</span> <span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>数据中有两列A和B，查看是否存在以下情况：<br>A B<br>1 2<br>2 1<br>可以先将AB按大小拼起来，再查询</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">    sku,</span><br><span class="line">    csku,</span><br><span class="line">    <span class="keyword">round</span>(score, <span class="number">10</span>) score,</span><br><span class="line">    <span class="keyword">if</span>(sku&gt;csku,<span class="keyword">concat_ws</span>(<span class="string">','</span>,csku,sku),<span class="keyword">concat_ws</span>(<span class="string">','</span>,sku,csku)) sku_csku_pair</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">    app.xxx</span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">    dt = <span class="string">'2018-12-25'</span></span><br><span class="line">    <span class="keyword">and</span> tab_name = <span class="string">'B'</span></span><br><span class="line">    <span class="keyword">and</span> sku_sr_type = <span class="string">'0'</span></span><br></pre></td></tr></table></figure>
+<h2 id="tips"><a href="#tips" class="headerlink" title="tips"></a>tips</h2><ul>
+<li>使用严格模式优点<ul>
+<li>禁止不指定分区查询</li>
+<li>避免join产生笛卡尔积</li>
+</ul>
+</li>
+<li>通过时间可以定位hadoop中文件是否被修改，在同一个集市中，如果有其他表指定的location错误，则很可能被修改。</li>
+<li>如果location指定错误，例如新表指定到旧表路径中，那么会影响旧表。如果直接drop新表，而新表不是external表，则会删除location中文件，无法恢复。所以，需要修改新表的location，在修改之前不要对新表做任何操作。</li>
+<li><code>concat_ws</code> 需要数据类型为 <code>string</code></li>
+<li><code>null</code><ul>
+<li><code>where col=NULL</code> 不会返回结果</li>
+<li><code>where col is null</code> 会返回为空的列</li>
+</ul>
+</li>
+<li><code>join</code><ul>
+<li><code>left join on</code> 保留左边表关键字信息（即使右表中没有匹配，也从左表返回所有的行 ），可以使用<code>where 右表.col is not null</code>实现join效果</li>
+<li><code>right join on</code> 保留右边关键字信息(即使左表中没有匹配，也从右表返回所有的行)</li>
+<li><code>inner join</code> 两边都有才保留，也可写为<code>join</code></li>
+<li><code>full join</code> 只要其中一个表中存在匹配，就返回行</li>
+</ul>
+</li>
+<li>这么写中间表<code>(${subSql}) t</code>只查了一遍</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">from($&#123;subSql&#125;) t</span><br><span class="line">    <span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">table</span> $&#123;num_rows_tb&#125; <span class="keyword">partition</span></span><br><span class="line">        ( tb_name = <span class="string">'$&#123;tb_name&#125;'</span></span><br><span class="line">        )</span><br><span class="line">    <span class="keyword">select</span> ct, <span class="string">'$&#123;select_dt&#125;'</span>, <span class="keyword">sysdate</span>()</span><br><span class="line">    <span class="keyword">insert</span> overwrite <span class="keyword">table</span> $&#123;null_rate_tb&#125; <span class="keyword">partition</span></span><br><span class="line">        ( tb_name = <span class="string">'$&#123;tb_name&#125;'</span></span><br><span class="line">        )</span><br><span class="line">    <span class="keyword">select</span></span><br><span class="line">        <span class="keyword">split</span>(kv, <span class="string">':'</span>) [<span class="number">0</span>] <span class="keyword">as</span> k,</span><br><span class="line">        <span class="keyword">cast</span>(<span class="keyword">split</span>(kv, <span class="string">':'</span>) [<span class="number">1</span>] <span class="keyword">as</span> <span class="keyword">double</span>) <span class="keyword">as</span> v,</span><br><span class="line">        <span class="string">'$&#123;select_dt&#125;'</span> <span class="keyword">as</span> select_dt lateral <span class="keyword">view</span> explode(<span class="keyword">split</span>(kvs, <span class="string">','</span>)) kvs <span class="keyword">as</span> kv;"</span><br></pre></td></tr></table></figure>
+<ul>
+<li>注意 lateral view explode要写在from的后面，上述如果不将from写在最上方，应该写为如下，而不能将from放在最后</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">select</span></span><br><span class="line">        <span class="keyword">split</span>(kv, <span class="string">':'</span>) [<span class="number">0</span>] <span class="keyword">as</span> k,</span><br><span class="line">        <span class="keyword">cast</span>(<span class="keyword">split</span>(kv, <span class="string">':'</span>) [<span class="number">1</span>] <span class="keyword">as</span> <span class="keyword">double</span>) <span class="keyword">as</span> v,</span><br><span class="line">        <span class="string">'$&#123;select_dt&#125;'</span> <span class="keyword">as</span> select_dt</span><br><span class="line"><span class="keyword">from</span>($&#123;subSql&#125;) t</span><br><span class="line"> lateral <span class="keyword">view</span> explode(<span class="keyword">split</span>(kvs, <span class="string">','</span>)) kvs <span class="keyword">as</span> kv;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>map数过大不一定运行快，过大的map数会被pending。</li>
+<li>在join时，如果on的是double数据类型，需要注意小数的精度不同可能造成=判定失败。可以用round(score, 2) score 只保留2位小数后再对比。</li>
+</ul>
+<h2 id="hdfs文件操作命令"><a href="#hdfs文件操作命令" class="headerlink" title="hdfs文件操作命令"></a>hdfs文件操作命令</h2><h3 id="常用"><a href="#常用" class="headerlink" title="常用"></a>常用</h3><ul>
+<li><code>hadoop fs -mkdir path</code>创建文件夹</li>
+<li><code>hadoop fs -put local_path hdfs_path</code> 上传本机的HDFS文件。local_path指非hdfs路径，例如/home/name</li>
+<li><code>hadoop fs -get hdfs_path local_path</code> 把HDFS的文件下载到本机</li>
+<li><code>hadoop fs -cat file_name</code> 读取HDFS文件<ol>
+<li>hadoop fs 和hdfs dfs 作用一样。都可以在本机上查看HDFS文件。</li>
+<li>HDFS下的文件可以压缩存储，这样能够减少表查询时对Hadoop集群的IO。</li>
+</ol>
+</li>
+</ul>
+<h3 id="从文件导数据到表"><a href="#从文件导数据到表" class="headerlink" title="从文件导数据到表"></a>从文件导数据到表</h3><ul>
+<li>使用put将test.txt文件放到hdfs中：<code>hadoop fs -put &#39;/home/test/test.txt&#39; /usr/recsys/rec/index_data/test</code></li>
+<li>使用load hdfs地址将数据导入表中：<code>load data inpath &#39;/user/recsys/rec/index_data/test/test.txt&#39; into table app.test;</code></li>
+<li>导入成功，可以在select limit表检查确认一下。</li>
+</ul>
+<h3 id="hadoop-fs-ls-path-查看HDFS文件名"><a href="#hadoop-fs-ls-path-查看HDFS文件名" class="headerlink" title="hadoop fs -ls [path]查看HDFS文件名"></a><code>hadoop fs -ls [path]</code>查看HDFS文件名</h3><p>后面不加目录参数的话，默认当前用户的目录。ls会显示文件详细信息，如果只想ls出文件名，可以这么写：（参考 <a href="https://stackoverflow.com/questions/21569172/how-to-list-only-the-file-names-in-hdfs" target="_blank" rel="noopener">https://stackoverflow.com/questions/21569172/how-to-list-only-the-file-names-in-hdfs</a> ）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hadoop fs -ls &lt;HDFS_DIR&gt;|cut -d &apos; &apos; -f17</span><br></pre></td></tr></table></figure>
+<p>或者先<code>sed &#39;1d&#39;</code> 删除第一行（第一行是总述信息），将多个空格替换为一个空格(<code>sed &#39;s/要被取代的字串/新的字串/g&#39;</code>)再cut：</p>
+<p>获取文件名：<code>hadoop fs -ls | sed &#39;1d;s/ */ /g&#39; | cut -d\ -f8</code></p>
+<p>获取文件名最后一列（这里是dt=2018-10-27）：<code>hadoop fs -ls | sed &#39;1d;s/ */ /g&#39; | cut -d\ -f8 | xargs -n 1 basename</code></p>
+<p>更优解：<code>hadoop fs -ls /tmp | sed 1d | perl -wlne&#39;print +(split &quot; &quot;,$_,8)[7]&#39;</code></p>
+<p>最终采用：<code>hadoop fs -ls | sed &#39;1d;s/ */ /g&#39; | cut -d\ -f8</code> 获取文件名列表</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 遍历文件。</span></span><br><span class="line">hdfs dfs -ls <span class="variable">$&#123;path&#125;</span> | sed <span class="string">'1d;s/  */ /g'</span> | cut -d\  -f8| <span class="keyword">while</span> <span class="built_in">read</span> line</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="variable">$&#123;line&#125;</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<p>对每个文件，<code>$(echo ${line}|cut -d &quot;=&quot; -f 2)</code> 取分区数据。以<code>=</code>分割取第2个元素</p>
+<p>补充：sed介绍： <a href="https://www.cnblogs.com/ggjucheng/archive/2013/01/13/2856901.html" target="_blank" rel="noopener">https://www.cnblogs.com/ggjucheng/archive/2013/01/13/2856901.html</a></p>
+<h3 id="常用设置"><a href="#常用设置" class="headerlink" title="常用设置"></a>常用设置</h3><ul>
+<li>集市限制小文件个数，可在脚本中加以下参数合并小文件：</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> hive.merge.mapfiles = <span class="literal">true</span></span><br><span class="line"><span class="keyword">set</span> hive.merge.mapredfiles = <span class="literal">true</span></span><br><span class="line"><span class="keyword">set</span> hive.merge.size.per.task = <span class="number">256000000</span></span><br><span class="line"><span class="keyword">set</span> hive.merge.smallfiles.avgsize = <span class="number">104857600</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/hive/" rel="tag"># hive</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/05/leetcode-238-除自身以外数组的乘积/" rel="next" title="leetcode-238-除自身以外数组的乘积">
+                <i class="fa fa-chevron-left"></i> leetcode-238-除自身以外数组的乘积
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">ywtail</p>
+              <p class="site-description motion-element" itemprop="description">Be a man.</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">57</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#增"><span class="nav-number">1.</span> <span class="nav-text">增</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建表"><span class="nav-number">1.1.</span> <span class="nav-text">建表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#增加字段-列"><span class="nav-number">1.2.</span> <span class="nav-text">增加字段(列)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#增加表记录"><span class="nav-number">1.3.</span> <span class="nav-text">增加表记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#增加分区"><span class="nav-number">1.4.</span> <span class="nav-text">增加分区</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删"><span class="nav-number">2.</span> <span class="nav-text">删</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除表格"><span class="nav-number">2.1.</span> <span class="nav-text">删除表格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除分区"><span class="nav-number">2.2.</span> <span class="nav-text">删除分区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删外部表数据"><span class="nav-number">2.3.</span> <span class="nav-text">删外部表数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改"><span class="nav-number">3.</span> <span class="nav-text">改</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#修改表记录"><span class="nav-number">3.1.</span> <span class="nav-text">修改表记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改字段名-列名"><span class="nav-number">3.2.</span> <span class="nav-text">修改字段名(列名)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改表属性"><span class="nav-number">3.3.</span> <span class="nav-text">修改表属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表的重命名"><span class="nav-number">3.4.</span> <span class="nav-text">表的重命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改分区"><span class="nav-number">3.5.</span> <span class="nav-text">修改分区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改location"><span class="nav-number">3.6.</span> <span class="nav-text">修改location</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查"><span class="nav-number">4.</span> <span class="nav-text">查</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用查询语句"><span class="nav-number">4.1.</span> <span class="nav-text">常用查询语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询重复的项"><span class="nav-number">4.2.</span> <span class="nav-text">查询重复的项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tips"><span class="nav-number">5.</span> <span class="nav-text">tips</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hdfs文件操作命令"><span class="nav-number">6.</span> <span class="nav-text">hdfs文件操作命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用"><span class="nav-number">6.1.</span> <span class="nav-text">常用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从文件导数据到表"><span class="nav-number">6.2.</span> <span class="nav-text">从文件导数据到表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hadoop-fs-ls-path-查看HDFS文件名"><span class="nav-number">6.3.</span> <span class="nav-text">hadoop fs -ls [path]查看HDFS文件名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用设置"><span class="nav-number">6.4.</span> <span class="nav-text">常用设置</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ywtail</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'Hn01Iq5tm1St1y55hF5K2M1P-gzGzoHsz',
+    appKey: 'VMAeg3KLjfddIO4nxJCqersc',
+    placeholder: '在此处输入评论',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+
+  
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log(`Failed to save Visitor num, with error message: ${responseJSON.error}`);
+              })
+          } else {
+            
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1 }))
+                .done(function() {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function() {
+                  console.log('Failed to create');
+                });
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log(`LeanCloud Counter Error: ${responseJSON.code} ${responseJSON.error}`);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'Hn01Iq5tm1St1y55hF5K2M1P-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'Hn01Iq5tm1St1y55hF5K2M1P-gzGzoHsz',
+                'X-LC-Key': 'VMAeg3KLjfddIO4nxJCqersc',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
