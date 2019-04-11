@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext">
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="数组实现一个支持动态扩容的数组参考：python实现动态数组 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051# coding:utf-8">
+<meta name="keywords" content="python,leetcode,数据结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构-2-数组、字符串">
+<meta property="og:url" content="http://ywtail.github.io/2019/04/11/数据结构-2-数组、字符串/index.html">
+<meta property="og:site_name" content="ywtail&#39;s blog">
+<meta property="og:description" content="数组实现一个支持动态扩容的数组参考：python实现动态数组 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051# coding:utf-8">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-04-11T13:42:38.993Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据结构-2-数组、字符串">
+<meta name="twitter:description" content="数组实现一个支持动态扩容的数组参考：python实现动态数组 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051# coding:utf-8">
+
+
+
+
+
+
+  <link rel="canonical" href="http://ywtail.github.io/2019/04/11/数据结构-2-数组、字符串/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>数据结构-2-数组、字符串 | ywtail's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ywtail's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ywtail.github.io/2019/04/11/数据结构-2-数组、字符串/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ywtail">
+      <meta itemprop="description" content="Be a man.">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ywtail's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数据结构-2-数组、字符串
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-11 16:14:25 / 修改时间：21:42:38" itemprop="dateCreated datePublished" datetime="2019-04-11T16:14:25+08:00">2019-04-11</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/数据结构/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <a href="/2019/04/11/数据结构-2-数组、字符串/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/04/11/数据结构-2-数组、字符串/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/04/11/数据结构-2-数组、字符串/" class="leancloud_visitors" data-flag-title="数据结构-2-数组、字符串">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><h3 id="实现一个支持动态扩容的数组"><a href="#实现一个支持动态扩容的数组" class="headerlink" title="实现一个支持动态扩容的数组"></a>实现一个支持动态扩容的数组</h3><p>参考：<a href="https://blog.csdn.net/u013109501/article/details/88020739" target="_blank" rel="noopener">python实现动态数组</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding:utf-8                                                                                                       </span></span><br><span class="line">                                                                                                                     </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Array</span>:</span>                                                                                                         </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, capacity)</span>:</span>                                                                                    </span><br><span class="line">        self.capacity = capacity                                                                                     </span><br><span class="line">        self.size = <span class="number">0</span>  <span class="comment"># 元素数目                                                                                        </span></span><br><span class="line">        self.data = [<span class="keyword">None</span>] * self.capacity                                                                           </span><br><span class="line">                                                                                                                     </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">resize</span><span class="params">(self, new_capacity)</span>:</span>                                                                                  </span><br><span class="line">        <span class="comment"># 新建容量为new_capacity的数组，将原数组元素逐个移动到新数组中                                                                       </span></span><br><span class="line">        new_arr = Array(new_capacity)                                                                                </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(self.size):                                                                                   </span><br><span class="line">            new_arr.append_element(self.data[i])                                                                     </span><br><span class="line">        self.capacity = new_capacity                                                                                 </span><br><span class="line">        self.data = new_arr.data                                                                                     </span><br><span class="line">        print(<span class="string">"Resize!!!Now Array is"</span>, self.data)                                                                    </span><br><span class="line">                                                                                                                     </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_element</span><span class="params">(self, index, e)</span>:</span>                                                                                 </span><br><span class="line">        <span class="keyword">if</span> index &lt; <span class="number">0</span> <span class="keyword">or</span> index &gt; self.size:                                                                           </span><br><span class="line">            print(<span class="string">"index out of range"</span>)                                                                              </span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>                                                                                                </span><br><span class="line">        <span class="keyword">if</span> self.size == self.capacity:  <span class="comment"># 如果满了则扩容2倍                                                                  </span></span><br><span class="line">            self.resize(<span class="number">2</span> * self.capacity)                                                                           </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(self.size - <span class="number">1</span>, index - <span class="number">1</span>, <span class="number">-1</span>):  <span class="comment"># 从后往前，将元素逐个往后移动一位，空位给新元素e                                    </span></span><br><span class="line">            self.data[i + <span class="number">1</span>] = self.data[i]                                                                          </span><br><span class="line">        self.data[index] = e                                                                                         </span><br><span class="line">        self.size += <span class="number">1</span>                                                                                               </span><br><span class="line">        print(<span class="string">"Add element!!!Now Array is"</span>, self.data)                                                               </span><br><span class="line">                                                                                                                     </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">append_element</span><span class="params">(self, e)</span>:</span>                                                                                     </span><br><span class="line">        self.add_element(self.size, e)  <span class="comment"># 直接调用add_element，减少判断                                                                  </span></span><br><span class="line">                                                                                                                     </span><br><span class="line">                                                                                                                     </span><br><span class="line">a = Array(<span class="number">3</span>)                                                                                                         </span><br><span class="line">a.add_element(<span class="number">1</span>, <span class="number">1</span>)                                                                                                  </span><br><span class="line">a.add_element(<span class="number">0</span>, <span class="number">5</span>)                                                                                                  </span><br><span class="line">a.append_element(<span class="number">6</span>)                                                                                                  </span><br><span class="line">a.append_element(<span class="number">1</span>)                                                                                                  </span><br><span class="line">a.append_element(<span class="number">4</span>)                                                                                                  </span><br><span class="line">                                                                                                                     </span><br><span class="line"><span class="string">"""                                                                                                                  </span></span><br><span class="line"><span class="string">index out of range                                                                                                   </span></span><br><span class="line"><span class="string">Add element!!!Now Array is [5, None, None]                                                                           </span></span><br><span class="line"><span class="string">Add element!!!Now Array is [5, 6, None]                                                                              </span></span><br><span class="line"><span class="string">Add element!!!Now Array is [5, 6, 1]                                                                                 </span></span><br><span class="line"><span class="string">Add element!!!Now Array is [5, None, None, None, None, None]                                                         </span></span><br><span class="line"><span class="string">Add element!!!Now Array is [5, 6, None, None, None, None]                                                            </span></span><br><span class="line"><span class="string">Add element!!!Now Array is [5, 6, 1, None, None, None]                                                               </span></span><br><span class="line"><span class="string">Resize!!!Now Array is [5, 6, 1, None, None, None]                                                                    </span></span><br><span class="line"><span class="string">Add element!!!Now Array is [5, 6, 1, 4, None, None]                                                                  </span></span><br><span class="line"><span class="string">"""</span></span><br></pre></td></tr></table></figure>
+<h3 id="实现一个大小固定的有序数组，支持动态增删改操作"><a href="#实现一个大小固定的有序数组，支持动态增删改操作" class="headerlink" title="实现一个大小固定的有序数组，支持动态增删改操作"></a>实现一个大小固定的有序数组，支持动态增删改操作</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SortList</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">        self.slist = []</span><br><span class="line">        self.max_size = n  <span class="comment"># 固定长度为n</span></span><br><span class="line">        self.now_size = <span class="number">0</span>  <span class="comment"># 记录当前长度方便后续操作</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_element</span><span class="params">(self, e)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.now_size &gt;= self.max_size:</span><br><span class="line">            print(<span class="string">"self.now_size &gt;= self.max_size"</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">        i = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> (i &lt; self.now_size):</span><br><span class="line">            <span class="keyword">if</span> self.slist[i] &lt; e:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        self.slist.append(e)</span><br><span class="line">        self.now_size += <span class="number">1</span></span><br><span class="line">        print(self.slist)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">remove_element</span><span class="params">(self, e)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.now_size == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">"self.now_size == 0"</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">        <span class="comment"># self.slist.remove(e) 直接使用remove可以实现功能。下方使用二分法找到对应元素索引再根据索引删除</span></span><br><span class="line"></span><br><span class="line">        ret = <span class="number">-1</span>  <span class="comment"># 待删除元素下标，不存在返回-1</span></span><br><span class="line">        start = <span class="number">0</span></span><br><span class="line">        end = self.now_size</span><br><span class="line">        <span class="keyword">while</span> start &lt; end:</span><br><span class="line">            mid = (start + end) // <span class="number">2</span></span><br><span class="line">            <span class="keyword">if</span> self.slist[mid] &lt; e:</span><br><span class="line">                start = mid + <span class="number">1</span></span><br><span class="line">            <span class="keyword">elif</span> self.slist[mid] &gt; e:</span><br><span class="line">                end = mid - <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                ret = mid</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">if</span> ret == <span class="number">-1</span>:</span><br><span class="line">            print(<span class="string">"element &#123;&#125; not found in slist"</span>.format(e))</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">        <span class="keyword">del</span> self.slist[ret]  <span class="comment"># 或self.slist.pop(ret); 或使用切片删除</span></span><br><span class="line">        <span class="comment"># self.slist.pop(ret)</span></span><br><span class="line">        self.now_size -= <span class="number">1</span></span><br><span class="line">        print(self.slist)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">replace_element</span><span class="params">(self, old, new)</span>:</span></span><br><span class="line">        self.remove_element(old)</span><br><span class="line">        self.add_element(new)</span><br><span class="line">        print(self.slist)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sl = SortList(<span class="number">3</span>)</span><br><span class="line">sl.add_element(<span class="number">1</span>)</span><br><span class="line">sl.remove_element(<span class="number">7</span>)</span><br><span class="line">sl.remove_element(<span class="number">1</span>)</span><br><span class="line">sl.add_element(<span class="number">2</span>)</span><br><span class="line">sl.add_element(<span class="number">3</span>)</span><br><span class="line">sl.add_element(<span class="number">4</span>)</span><br><span class="line">sl.replace_element(<span class="number">3</span>, <span class="number">5</span>)</span><br><span class="line">sl.add_element(<span class="number">1</span>)</span><br><span class="line">sl.remove_element(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">[1]</span></span><br><span class="line"><span class="string">element 7 not found in slist</span></span><br><span class="line"><span class="string">[]</span></span><br><span class="line"><span class="string">[2]</span></span><br><span class="line"><span class="string">[2, 3]</span></span><br><span class="line"><span class="string">[2, 3, 4]</span></span><br><span class="line"><span class="string">[2, 4]</span></span><br><span class="line"><span class="string">[2, 4, 5]</span></span><br><span class="line"><span class="string">[2, 4, 5]</span></span><br><span class="line"><span class="string">self.now_size &gt;= self.max_size</span></span><br><span class="line"><span class="string">[2, 5]</span></span><br><span class="line"><span class="string">"""</span></span><br></pre></td></tr></table></figure>
+<h3 id="实现两个有序数组合并为一个有序数组"><a href="#实现两个有序数组合并为一个有序数组" class="headerlink" title="实现两个有序数组合并为一个有序数组"></a>实现两个有序数组合并为一个有序数组</h3><h4 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h4><p><code>return sorted(list1+list2)</code>，先合并再排序</p>
+<h4 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h4><p>使用一种比较朴素的方法来合并：遍历2个数组，将较小的数插入list</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge_sort_list</span><span class="params">(list1, list2)</span>:</span></span><br><span class="line">    n1 = len(list1)</span><br><span class="line">    n2 = len(list2)</span><br><span class="line">    <span class="keyword">if</span> (n1 == <span class="number">0</span>):</span><br><span class="line">        <span class="keyword">return</span> list2</span><br><span class="line">    <span class="keyword">elif</span> (n2 == <span class="number">0</span>):</span><br><span class="line">        <span class="keyword">return</span> list1</span><br><span class="line">    list = []</span><br><span class="line">    print(list)</span><br><span class="line">    p1 = <span class="number">0</span></span><br><span class="line">    p2 = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> p1 &lt; n1 <span class="keyword">and</span> p2 &lt; n2:</span><br><span class="line">        <span class="keyword">if</span> list1[p1] &lt;= list2[p2]:</span><br><span class="line">            list.append(list1[p1])</span><br><span class="line">            p1 += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            list.append(list2[p2])</span><br><span class="line">            p2 += <span class="number">1</span></span><br><span class="line">        print(list)</span><br><span class="line">    <span class="keyword">if</span> p1 &lt; n1:</span><br><span class="line">        list += list1[p1:]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        list += list2[p2:]</span><br><span class="line">    <span class="keyword">return</span> list</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">list1 = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">8</span>]</span><br><span class="line">list2 = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">9</span>, <span class="number">10</span>]</span><br><span class="line">print(merge_sort_list(list1, list2))</span><br><span class="line">print(sorted(list1 + list2))  <span class="comment"># 用于对比结果</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">[]</span></span><br><span class="line"><span class="string">[0]</span></span><br><span class="line"><span class="string">[0, 1]</span></span><br><span class="line"><span class="string">[0, 1, 1]</span></span><br><span class="line"><span class="string">[0, 1, 1, 2]</span></span><br><span class="line"><span class="string">[0, 1, 1, 2, 3]</span></span><br><span class="line"><span class="string">[0, 1, 1, 2, 3, 3]</span></span><br><span class="line"><span class="string">[0, 1, 1, 2, 3, 3, 4]</span></span><br><span class="line"><span class="string">[0, 1, 1, 2, 3, 3, 4, 5]</span></span><br><span class="line"><span class="string">[0, 1, 1, 2, 3, 3, 4, 5, 6]</span></span><br><span class="line"><span class="string">[0, 1, 1, 2, 3, 3, 4, 5, 6, 8]</span></span><br><span class="line"><span class="string">[0, 1, 1, 2, 3, 3, 4, 5, 6, 8, 9, 10]</span></span><br><span class="line"><span class="string">[0, 1, 1, 2, 3, 3, 4, 5, 6, 8, 9, 10]</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line">list1 = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">8</span>]</span><br><span class="line">list2 = []</span><br><span class="line">print(merge_sort_list(list1, list2))</span><br><span class="line">print(sorted(list1 + list2))</span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">[1, 3, 5, 6, 8]</span></span><br><span class="line"><span class="string">[1, 3, 5, 6, 8]</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line">list1 = []</span><br><span class="line">list2 = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">9</span>, <span class="number">10</span>]</span><br><span class="line">print(merge_sort_list(list1, list2))</span><br><span class="line">print(sorted(list1 + list2))</span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">[0, 1, 2, 3, 4, 9, 10]</span></span><br><span class="line"><span class="string">[0, 1, 2, 3, 4, 9, 10]</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line">list1 = []</span><br><span class="line">list2 = []</span><br><span class="line">print(merge_sort_list(list1, list2))</span><br><span class="line">print(sorted(list1 + list2))</span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">[]</span></span><br><span class="line"><span class="string">[]</span></span><br><span class="line"><span class="string">"""</span></span><br></pre></td></tr></table></figure>
+<h3 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h3><p>学习哈希表思想，并完成leetcode上的两数之和(1)及Happy  Number(202)！(要求全部用哈希思想实现！)</p>
+<h4 id="leetcode-1-两数之和"><a href="#leetcode-1-两数之和" class="headerlink" title="leetcode-1-两数之和"></a>leetcode-1-两数之和</h4><p>代码见：<a href="http://ywtail.github.io/2019/01/26/leetcode-1-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/">leetcode-1-两数之和</a> 中”方法二”</p>
+<h3 id="对应的-LeetCode-练习题"><a href="#对应的-LeetCode-练习题" class="headerlink" title="对应的 LeetCode 练习题"></a>对应的 LeetCode 练习题</h3><h4 id="Three-Sum（求三数之和）"><a href="#Three-Sum（求三数之和）" class="headerlink" title="Three Sum（求三数之和）"></a>Three Sum（求三数之和）</h4><p>英文版：<a href="https://leetcode.com/problems/3sum/" target="_blank" rel="noopener">https://leetcode.com/problems/3sum/</a></p>
+<p>中文版：<a href="https://leetcode-cn.com/problems/3sum/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/3sum/</a></p>
+<p>代码见：<a href="http://ywtail.github.io/2019/01/30/leetcode-15-%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C/">leetcode-15-三数之和</a></p>
+<h4 id="Majority-Element（求众数）"><a href="#Majority-Element（求众数）" class="headerlink" title="Majority Element（求众数）"></a>Majority Element（求众数）</h4><p>英文版：<a href="https://leetcode.com/problems/majority-element/" target="_blank" rel="noopener">https://leetcode.com/problems/majority-element/</a></p>
+<p>中文版：<a href="https://leetcode-cn.com/problems/majority-element/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/majority-element/</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">majorityElement</span><span class="params">(self, nums)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        :type nums: List[int]</span></span><br><span class="line"><span class="string">        :rtype: int</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        m_dict = &#123;&#125;                         </span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> nums:                      </span><br><span class="line">            m_dict[e] = m_dict.get(e, <span class="number">0</span>) + <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> m_dict[e] &gt; len(nums) / <span class="number">2</span>:  </span><br><span class="line">                <span class="keyword">return</span> e</span><br></pre></td></tr></table></figure>
+<p>或者调用<code>Counter</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">majorityElement</span><span class="params">(self, nums)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        :type nums: List[int]</span></span><br><span class="line"><span class="string">        :rtype: int</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line">        num=dict(Counter(nums))</span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> num:</span><br><span class="line">            <span class="keyword">if</span> num[key]&gt;len(nums)/<span class="number">2</span>:</span><br><span class="line">                <span class="keyword">return</span> key</span><br></pre></td></tr></table></figure>
+<h4 id="Missing-Positive（求缺失的第一个正数）"><a href="#Missing-Positive（求缺失的第一个正数）" class="headerlink" title="Missing Positive（求缺失的第一个正数）"></a>Missing Positive（求缺失的第一个正数）</h4><p>英文版：<a href="https://leetcode.com/problems/first-missing-positive/" target="_blank" rel="noopener">https://leetcode.com/problems/first-missing-positive/</a></p>
+<p>中文版：<a href="https://leetcode-cn.com/problems/first-missing-positive/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/first-missing-positive/</a></p>
+<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><h3 id="实现一个字符集，只包含-a～z-这-26-个英文字母的-Trie-树"><a href="#实现一个字符集，只包含-a～z-这-26-个英文字母的-Trie-树" class="headerlink" title="实现一个字符集，只包含 a～z 这 26 个英文字母的 Trie 树"></a>实现一个字符集，只包含 a～z 这 26 个英文字母的 Trie 树</h3><p>Trie树又叫做前缀树（Prefix Tree）</p>
+<p>将每个节点的children都是一个dict，根据dict中的key找下一个节点</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding:utf-8                                          </span></span><br><span class="line">                                                        </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span><span class="params">(object)</span>:</span>                                     </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span>                                 </span><br><span class="line">        self.children = &#123;&#125;                              </span><br><span class="line">        self.is_end = <span class="keyword">False</span>                             </span><br><span class="line">                                                        </span><br><span class="line">                                                        </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span><span class="params">(object)</span>:</span>                                     </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span>                                 </span><br><span class="line">        self.root = Node()                              </span><br><span class="line">                                                        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self, word)</span>:</span>                             </span><br><span class="line">        node = self.root                                </span><br><span class="line">        <span class="keyword">for</span> w <span class="keyword">in</span> word:                                  </span><br><span class="line">            <span class="keyword">if</span> w <span class="keyword">not</span> <span class="keyword">in</span> node.children:                  </span><br><span class="line">                node.children[w] = Node()               </span><br><span class="line">            node = node.children[w]                     </span><br><span class="line">        node.is_end = <span class="keyword">True</span>                              </span><br><span class="line">                                                        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(self, word)</span>:</span>                             </span><br><span class="line">        node = self.root                                </span><br><span class="line">        <span class="keyword">for</span> w <span class="keyword">in</span> word:                                  </span><br><span class="line">            <span class="keyword">if</span> w <span class="keyword">not</span> <span class="keyword">in</span> node.children:                  </span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span>                            </span><br><span class="line">            node = node.children[w]                     </span><br><span class="line">        <span class="keyword">return</span> node.is_end                              </span><br><span class="line">                                                        </span><br><span class="line">                                                        </span><br><span class="line">t = Trie()                                              </span><br><span class="line">t.insert(<span class="string">"hi"</span>)                                          </span><br><span class="line">t.insert(<span class="string">"hello"</span>)                                       </span><br><span class="line">print(t.search(<span class="string">"a"</span>))  <span class="comment"># False                           </span></span><br><span class="line">print(t.search(<span class="string">"hi"</span>))  <span class="comment"># True</span></span><br></pre></td></tr></table></figure>
+<h3 id="实现朴素的字符串匹配算法"><a href="#实现朴素的字符串匹配算法" class="headerlink" title="实现朴素的字符串匹配算法"></a>实现朴素的字符串匹配算法</h3><p>字符串匹配：字符串”abcde”中是否含有字符串”bd”</p>
+<p>朴素算法：暴力解，下面给出了2种方式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding:utf-8</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_str</span><span class="params">(str1, str2)</span>:</span></span><br><span class="line">    n1 = len(str1)</span><br><span class="line">    n2 = len(str2)</span><br><span class="line">    <span class="keyword">if</span> n2 == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n1 - n2):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(n2):</span><br><span class="line">            <span class="comment"># print(i, j)</span></span><br><span class="line">            <span class="keyword">if</span> str1[i + j] != str2[j]:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">if</span> j == n2 - <span class="number">1</span>:</span><br><span class="line">                    <span class="keyword">return</span> i</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_str2</span><span class="params">(str1, str2)</span>:</span></span><br><span class="line">    p1 = <span class="number">0</span></span><br><span class="line">    p2 = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> p1 &lt; len(str1) <span class="keyword">and</span> p2 &lt; len(str2):</span><br><span class="line">        <span class="comment"># print(p1, p2)</span></span><br><span class="line">        <span class="keyword">if</span> str1[p1] == str2[p2]:</span><br><span class="line">            p1, p2 = p1 + <span class="number">1</span>, p2 + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            p1, p2 = p1 - p2 + <span class="number">1</span>, <span class="number">0</span>  <span class="comment"># 注意p1取值为 p1 - p2 + 1</span></span><br><span class="line">    <span class="keyword">if</span> p2 == len(str2):</span><br><span class="line">        <span class="keyword">return</span> p1 - p2</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">str1 = <span class="string">"abcdefs"</span></span><br><span class="line">str2 = <span class="string">"bc"</span></span><br><span class="line">str3 = <span class="string">"ea"</span></span><br><span class="line">str4 = <span class="string">"jljljkjjjl"</span></span><br><span class="line">str5 = <span class="string">""</span></span><br><span class="line">str8 = <span class="string">"ab"</span></span><br><span class="line">print(find_str(str1, str2))</span><br><span class="line">print(find_str2(str1, str2))</span><br><span class="line">print(str1.find(str2))  <span class="comment"># 1  使用find用于检验结果</span></span><br><span class="line"></span><br><span class="line">print(find_str(str1, str3))</span><br><span class="line">print(find_str2(str1, str3))</span><br><span class="line">print(str1.find(str3))  <span class="comment"># -1</span></span><br><span class="line"></span><br><span class="line">print(find_str(str1, str4))</span><br><span class="line">print(find_str2(str1, str4))</span><br><span class="line">print(str1.find(str4))  <span class="comment"># -1</span></span><br><span class="line"></span><br><span class="line">print(find_str(str1, str5))</span><br><span class="line">print(find_str2(str1, str5))</span><br><span class="line">print(str1.find(str5))  <span class="comment"># 0</span></span><br><span class="line"></span><br><span class="line">print(find_str(str1, str8))</span><br><span class="line">print(find_str2(str1, str8))</span><br><span class="line">print(str1.find(str8))  <span class="comment"># 0</span></span><br><span class="line"></span><br><span class="line">str6 = <span class="string">""</span></span><br><span class="line">str7 = <span class="string">""</span></span><br><span class="line">print(find_str(str6, str7))</span><br><span class="line">print(find_str2(str6, str7))</span><br><span class="line">print(str6.find(str7))  <span class="comment"># 0</span></span><br></pre></td></tr></table></figure>
+<h3 id="对应的-LeetCode-练习题-1"><a href="#对应的-LeetCode-练习题-1" class="headerlink" title="对应的 LeetCode 练习题"></a>对应的 LeetCode 练习题</h3><h4 id="Reverse-String-（反转字符串）"><a href="#Reverse-String-（反转字符串）" class="headerlink" title="Reverse String （反转字符串）"></a>Reverse String （反转字符串）</h4><p>英文版：<a href="https://leetcode.com/problems/reverse-string/" target="_blank" rel="noopener">https://leetcode.com/problems/reverse-string/</a></p>
+<p>中文版：<a href="https://leetcode-cn.com/problems/reverse-string/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/reverse-string/</a></p>
+<p>代码见：<a href="http://ywtail.github.io/2019/02/27/leetcode-344-%E5%8F%8D%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2/">leetcode-344-反转字符串</a></p>
+<h4 id="Reverse-Words-in-a-String（翻转字符串里的单词）"><a href="#Reverse-Words-in-a-String（翻转字符串里的单词）" class="headerlink" title="Reverse Words in a String（翻转字符串里的单词）"></a>Reverse Words in a String（翻转字符串里的单词）</h4><p>英文版：<a href="https://leetcode.com/problems/reverse-words-in-a-string/" target="_blank" rel="noopener">https://leetcode.com/problems/reverse-words-in-a-string/</a></p>
+<p>中文版：<a href="https://leetcode-cn.com/problems/reverse-words-in-a-string/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/reverse-words-in-a-string/</a></p>
+<p>代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverseWords</span><span class="params">(self, s)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        :type s: str</span></span><br><span class="line"><span class="string">        :rtype: str</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">" "</span>.join(s.strip().split()[::<span class="number">-1</span>])</span><br></pre></td></tr></table></figure>
+<h4 id="String-to-Integer-atoi-（字符串转换整数-atoi-）"><a href="#String-to-Integer-atoi-（字符串转换整数-atoi-）" class="headerlink" title="String to Integer (atoi)（字符串转换整数 (atoi)）"></a>String to Integer (atoi)（字符串转换整数 (atoi)）</h4><p>英文版：<a href="https://leetcode.com/problems/string-to-integer-atoi/" target="_blank" rel="noopener">https://leetcode.com/problems/string-to-integer-atoi/</a></p>
+<p>中文版：<a href="https://leetcode-cn.com/problems/string-to-integer-atoi/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/string-to-integer-atoi/</a></p>
+<p>代码见：<a href="http://ywtail.github.io/2019/01/26/leetcode-1-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/">leetcode-8-字符串转换整数(atoi)</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/leetcode/" rel="tag"># leetcode</a>
+          
+            <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/09/Linux常用命令/" rel="next" title="Linux常用命令">
+                <i class="fa fa-chevron-left"></i> Linux常用命令
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">ywtail</p>
+              <p class="site-description motion-element" itemprop="description">Be a man.</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">60</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">23</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数组"><span class="nav-number">1.</span> <span class="nav-text">数组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实现一个支持动态扩容的数组"><span class="nav-number">1.1.</span> <span class="nav-text">实现一个支持动态扩容的数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现一个大小固定的有序数组，支持动态增删改操作"><span class="nav-number">1.2.</span> <span class="nav-text">实现一个大小固定的有序数组，支持动态增删改操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现两个有序数组合并为一个有序数组"><span class="nav-number">1.3.</span> <span class="nav-text">实现两个有序数组合并为一个有序数组</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#方法一"><span class="nav-number">1.3.1.</span> <span class="nav-text">方法一</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法二"><span class="nav-number">1.3.2.</span> <span class="nav-text">方法二</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#哈希表"><span class="nav-number">1.4.</span> <span class="nav-text">哈希表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#leetcode-1-两数之和"><span class="nav-number">1.4.1.</span> <span class="nav-text">leetcode-1-两数之和</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对应的-LeetCode-练习题"><span class="nav-number">1.5.</span> <span class="nav-text">对应的 LeetCode 练习题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Three-Sum（求三数之和）"><span class="nav-number">1.5.1.</span> <span class="nav-text">Three Sum（求三数之和）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Majority-Element（求众数）"><span class="nav-number">1.5.2.</span> <span class="nav-text">Majority Element（求众数）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Missing-Positive（求缺失的第一个正数）"><span class="nav-number">1.5.3.</span> <span class="nav-text">Missing Positive（求缺失的第一个正数）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串"><span class="nav-number">2.</span> <span class="nav-text">字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实现一个字符集，只包含-a～z-这-26-个英文字母的-Trie-树"><span class="nav-number">2.1.</span> <span class="nav-text">实现一个字符集，只包含 a～z 这 26 个英文字母的 Trie 树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现朴素的字符串匹配算法"><span class="nav-number">2.2.</span> <span class="nav-text">实现朴素的字符串匹配算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对应的-LeetCode-练习题-1"><span class="nav-number">2.3.</span> <span class="nav-text">对应的 LeetCode 练习题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Reverse-String-（反转字符串）"><span class="nav-number">2.3.1.</span> <span class="nav-text">Reverse String （反转字符串）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Reverse-Words-in-a-String（翻转字符串里的单词）"><span class="nav-number">2.3.2.</span> <span class="nav-text">Reverse Words in a String（翻转字符串里的单词）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#String-to-Integer-atoi-（字符串转换整数-atoi-）"><span class="nav-number">2.3.3.</span> <span class="nav-text">String to Integer (atoi)（字符串转换整数 (atoi)）</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ywtail</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'Hn01Iq5tm1St1y55hF5K2M1P-gzGzoHsz',
+    appKey: 'VMAeg3KLjfddIO4nxJCqersc',
+    placeholder: '在此处输入评论',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+
+  
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log(`Failed to save Visitor num, with error message: ${responseJSON.error}`);
+              })
+          } else {
+            
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1 }))
+                .done(function() {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function() {
+                  console.log('Failed to create');
+                });
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log(`LeanCloud Counter Error: ${responseJSON.code} ${responseJSON.error}`);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'Hn01Iq5tm1St1y55hF5K2M1P-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'Hn01Iq5tm1St1y55hF5K2M1P-gzGzoHsz',
+                'X-LC-Key': 'VMAeg3KLjfddIO4nxJCqersc',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
