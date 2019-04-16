@@ -122,25 +122,25 @@
 
 
 
-  <meta name="description" content="git 重复上次失败的提交在git push时失败了，提示有单个文件超过 100M，所以不能 push。在本地删除了这个文件，再 git add、git commit -a -m、git push 依然失败，因为依然会进行上一次失败的 push，超过 100M 的文件依然尝试上传，即使此时在本地已经删除了。 此时git commit 或 git status 提示如下1Your branch is">
-<meta name="keywords" content="git">
+  <meta name="description" content="散列表（哈希表）实现一个基于链表法解决冲突问题的散列表参考：https://www.cnblogs.com/linxiyue/p/3795396.html 1234567891011121314151617181920212223242526272829303132333435363738394041424344class _ListNode(object):    def __init__(se">
+<meta name="keywords" content="python,leetcode,数据结构">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Git常见问题及解决方案">
-<meta property="og:url" content="http://ywtail.github.io/2017/06/07/Git常见问题及解决方案/index.html">
+<meta property="og:title" content="数据结构-4-散列表(哈希表)">
+<meta property="og:url" content="http://ywtail.github.io/2019/04/16/数据结构-4-散列表-哈希表/index.html">
 <meta property="og:site_name" content="ywtail&#39;s blog">
-<meta property="og:description" content="git 重复上次失败的提交在git push时失败了，提示有单个文件超过 100M，所以不能 push。在本地删除了这个文件，再 git add、git commit -a -m、git push 依然失败，因为依然会进行上一次失败的 push，超过 100M 的文件依然尝试上传，即使此时在本地已经删除了。 此时git commit 或 git status 提示如下1Your branch is">
+<meta property="og:description" content="散列表（哈希表）实现一个基于链表法解决冲突问题的散列表参考：https://www.cnblogs.com/linxiyue/p/3795396.html 1234567891011121314151617181920212223242526272829303132333435363738394041424344class _ListNode(object):    def __init__(se">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-01-26T15:19:41.953Z">
+<meta property="og:updated_time" content="2019-04-16T12:37:39.157Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Git常见问题及解决方案">
-<meta name="twitter:description" content="git 重复上次失败的提交在git push时失败了，提示有单个文件超过 100M，所以不能 push。在本地删除了这个文件，再 git add、git commit -a -m、git push 依然失败，因为依然会进行上一次失败的 push，超过 100M 的文件依然尝试上传，即使此时在本地已经删除了。 此时git commit 或 git status 提示如下1Your branch is">
+<meta name="twitter:title" content="数据结构-4-散列表(哈希表)">
+<meta name="twitter:description" content="散列表（哈希表）实现一个基于链表法解决冲突问题的散列表参考：https://www.cnblogs.com/linxiyue/p/3795396.html 1234567891011121314151617181920212223242526272829303132333435363738394041424344class _ListNode(object):    def __init__(se">
 
 
 
 
 
 
-  <link rel="canonical" href="http://ywtail.github.io/2017/06/07/Git常见问题及解决方案/">
+  <link rel="canonical" href="http://ywtail.github.io/2019/04/16/数据结构-4-散列表-哈希表/">
 
 
 
@@ -150,7 +150,7 @@
   };
 </script>
 
-  <title>Git常见问题及解决方案 | ywtail's blog</title>
+  <title>数据结构-4-散列表(哈希表) | ywtail's blog</title>
   
 
 
@@ -378,7 +378,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://ywtail.github.io/2017/06/07/Git常见问题及解决方案/">
+    <link itemprop="mainEntityOfPage" href="http://ywtail.github.io/2019/04/16/数据结构-4-散列表-哈希表/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="ywtail">
@@ -395,7 +395,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Git常见问题及解决方案
+          <h1 class="post-title" itemprop="name headline">数据结构-4-散列表(哈希表)
 
               
             
@@ -421,24 +421,12 @@
                 
               
 
-              <time title="创建时间：2017-06-07 11:09:21" itemprop="dateCreated datePublished" datetime="2017-06-07T11:09:21+08:00">2017-06-07</time>
+              <time title="创建时间：2019-04-16 19:40:36 / 修改时间：20:37:39" itemprop="dateCreated datePublished" datetime="2019-04-16T19:40:36+08:00">2019-04-16</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-26 23:19:41" itemprop="dateModified" datetime="2019-01-26T23:19:41+08:00">2019-01-26</time>
               
             
           </span>
@@ -455,7 +443,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/git/" itemprop="url" rel="index"><span itemprop="name">git</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/数据结构/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a></span>
 
                 
                 
@@ -473,8 +461,8 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
             
-                <a href="/2017/06/07/Git常见问题及解决方案/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2017/06/07/Git常见问题及解决方案/" itemprop="commentCount"></span>
+                <a href="/2019/04/16/数据结构-4-散列表-哈希表/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/04/16/数据结构-4-散列表-哈希表/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -482,7 +470,7 @@
 
           
           
-            <span id="/2017/06/07/Git常见问题及解决方案/" class="leancloud_visitors" data-flag-title="Git常见问题及解决方案">
+            <span id="/2019/04/16/数据结构-4-散列表-哈希表/" class="leancloud_visitors" data-flag-title="数据结构-4-散列表(哈希表)">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -513,14 +501,18 @@
       
 
       
-        <h3 id="git-重复上次失败的提交"><a href="#git-重复上次失败的提交" class="headerlink" title="git 重复上次失败的提交"></a>git 重复上次失败的提交</h3><p>在<code>git push</code>时失败了，提示有单个文件超过 100M，所以不能 push。<br>在本地删除了这个文件，再 <code>git add</code>、<code>git commit -a -m</code>、<code>git push</code> 依然失败，因为依然会进行上一次失败的 push，超过 100M 的文件依然尝试上传，即使此时在本地已经删除了。</p>
-<p>此时<code>git commit</code> 或 <code>git status</code> 提示如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Your branch is ahead of <span class="string">'origin/master'</span> by 3 commits.</span><br></pre></td></tr></table></figure></p>
-<p>解决方案参考：<a href="https://stackoverflow.com/questions/16288176/your-branch-is-ahead-of-origin-master-by-3-commits" target="_blank" rel="noopener">https://stackoverflow.com/questions/16288176/your-branch-is-ahead-of-origin-master-by-3-commits</a></p>
-<p>因为不想再提交这个超过 100M 的文件，所以使用 <code>git reset --hard origin/master</code> 将本地重置为远程 git。再提交就成功了。</p>
-<h3 id="删除本地-git-init-过的文件-override-r—r—r—"><a href="#删除本地-git-init-过的文件-override-r—r—r—" class="headerlink" title="删除本地 git init 过的文件 override r—r—r—"></a>删除本地 git init 过的文件 override r—r—r—</h3><p>使用 <code>rm -r filename</code> 删除本地<code>git init</code>过的文件时，提示如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">override r--r--r-- XXXXXXX?</span><br></pre></td></tr></table></figure></p>
-<p>解决方案参考：<a href="https://unix.stackexchange.com/questions/104330/how-do-i-override-rw-r-r-root-wheel-for-a-all-files-in-a-directory" target="_blank" rel="noopener">https://unix.stackexchange.com/questions/104330/how-do-i-override-rw-r-r-root-wheel-for-a-all-files-in-a-directory</a></p>
-<p>最终使用 <code>sudo rm -r filename</code> 删除成功。</p>
-
+        <h2 id="散列表（哈希表）"><a href="#散列表（哈希表）" class="headerlink" title="散列表（哈希表）"></a>散列表（哈希表）</h2><h3 id="实现一个基于链表法解决冲突问题的散列表"><a href="#实现一个基于链表法解决冲突问题的散列表" class="headerlink" title="实现一个基于链表法解决冲突问题的散列表"></a>实现一个基于链表法解决冲突问题的散列表</h3><p>参考：<a href="https://www.cnblogs.com/linxiyue/p/3795396.html" target="_blank" rel="noopener">https://www.cnblogs.com/linxiyue/p/3795396.html</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_ListNode</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,key)</span>:</span></span><br><span class="line">        self.key=key</span><br><span class="line">        self.next=<span class="keyword">None</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HashMap</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,tableSize)</span>:</span></span><br><span class="line">        self._table=[<span class="keyword">None</span>]*tableSize</span><br><span class="line">        self._n=<span class="number">0</span>  <span class="comment">#number of nodes in the map</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__len__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self._n</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_hash</span><span class="params">(self,key)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> abs(hash(key))%len(self._table)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self,key)</span>:</span></span><br><span class="line">        j=self._hash(key)</span><br><span class="line">        node=self._table[j]</span><br><span class="line">        <span class="keyword">while</span> node <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span> <span class="keyword">and</span> node.key!=key :</span><br><span class="line">            node=node.next</span><br><span class="line">        <span class="keyword">if</span> node <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">            <span class="keyword">raise</span> KeyError,<span class="string">'KeyError'</span>+repr(key)</span><br><span class="line">        <span class="keyword">return</span> node       </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self,key)</span>:</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            self[key]</span><br><span class="line">        <span class="keyword">except</span> KeyError:</span><br><span class="line">            j=self._hash(key)</span><br><span class="line">            node=self._table[j]</span><br><span class="line">            self._table[j]=_ListNode(key)</span><br><span class="line">            self._table[j].next=node</span><br><span class="line">            self._n+=<span class="number">1</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__delitem__</span><span class="params">(self,key)</span>:</span></span><br><span class="line">        j=self._hash(key)</span><br><span class="line">        node=self._table[j]</span><br><span class="line">        <span class="keyword">if</span> node <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">            <span class="keyword">if</span> node.key==key:</span><br><span class="line">                self._table[j]=node.next</span><br><span class="line">                self._-=<span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">while</span> node.next!=<span class="keyword">None</span>:</span><br><span class="line">                    pre=node</span><br><span class="line">                    node=node.next</span><br><span class="line">                    <span class="keyword">if</span> node.key==key:</span><br><span class="line">                        pre.next=node.next</span><br><span class="line">                        self._n-=<span class="number">1</span></span><br><span class="line">                        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<h3 id="实现一个-LRU-缓存淘汰算法"><a href="#实现一个-LRU-缓存淘汰算法" class="headerlink" title="实现一个 LRU 缓存淘汰算法"></a>实现一个 LRU 缓存淘汰算法</h3><blockquote>
+<p>LRU全称是Least Recently Used，即最近最久未使用的意思。</p>
+<p>LRU算法的设计原则是：<strong>如果一个数据在最近一段时间没有被访问到，那么在将来它被访问的可能性也很小</strong>。也就是说，当限定的空间已存满数据时，应当把最久没有被访问到的数据淘汰。</p>
+</blockquote>
+<h4 id="使用dict和list实现"><a href="#使用dict和list实现" class="headerlink" title="使用dict和list实现"></a>使用dict和list实现</h4><p>比较自然的想法：使用dict存<code>&lt;key,value&gt;</code>，使用list记录访问顺序，索引<code>[0,…,capacity-1]</code>，越小表示访问时间越近，每次<code>pop()</code>删除最末尾的元素。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding: utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LRUCache</span><span class="params">(object)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, capacity)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        :type capacity: int</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        self.capacity = capacity</span><br><span class="line">        self.lru_cache = &#123;&#125;</span><br><span class="line">        self.sort_list = []  <span class="comment"># 访问顺序</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, key)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        :type key: int</span></span><br><span class="line"><span class="string">        :rtype: int</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="keyword">if</span> key <span class="keyword">in</span> self.lru_cache:</span><br><span class="line">            value = self.lru_cache[key]</span><br><span class="line">            self.sort_list.remove(key)</span><br><span class="line">            self.sort_list.insert(<span class="number">0</span>, key)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            value = <span class="number">-1</span></span><br><span class="line">        print(<span class="string">"get"</span>, key, <span class="string">": "</span>, self.lru_cache, self.sort_list)</span><br><span class="line">        <span class="keyword">return</span> value</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">put</span><span class="params">(self, key, value)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        :type key: int</span></span><br><span class="line"><span class="string">        :type value: int</span></span><br><span class="line"><span class="string">        :rtype: None</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="keyword">if</span> key <span class="keyword">in</span> self.lru_cache:</span><br><span class="line">            self.lru_cache[key] = value</span><br><span class="line">            self.sort_list.remove(key)</span><br><span class="line">            self.sort_list.insert(<span class="number">0</span>, key)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">if</span> len(self.sort_list) == self.capacity:</span><br><span class="line">                last_key = self.sort_list.pop()</span><br><span class="line">                self.lru_cache.pop(last_key)</span><br><span class="line">            self.sort_list.insert(<span class="number">0</span>, key)</span><br><span class="line">            self.lru_cache[key] = value</span><br><span class="line"></span><br><span class="line">        print(<span class="string">"put &lt;"</span>, key, <span class="string">":"</span>, value, <span class="string">"&gt;: "</span>, self.lru_cache, self.sort_list)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Your LRUCache object will be instantiated and called as such:</span></span><br><span class="line">cache = LRUCache(<span class="number">2</span>)</span><br><span class="line">cache.put(<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">cache.put(<span class="number">2</span>, <span class="number">2</span>)</span><br><span class="line">print(<span class="string">"get value is: "</span>,cache.get(<span class="number">1</span>))</span><br><span class="line">cache.put(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">cache.put(<span class="number">4</span>, <span class="number">4</span>)</span><br><span class="line">print(<span class="string">"get value is: "</span>,cache.get(<span class="number">1</span>))</span><br><span class="line">print(<span class="string">"get value is: "</span>,cache.get(<span class="number">3</span>))</span><br><span class="line">print(<span class="string">"get value is: "</span>,cache.get(<span class="number">5</span>))</span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">put &lt; 1 : 1 &gt;:  &#123;1: 1&#125; [1]</span></span><br><span class="line"><span class="string">put &lt; 2 : 2 &gt;:  &#123;1: 1, 2: 2&#125; [2, 1]</span></span><br><span class="line"><span class="string">get 1 :  &#123;1: 1, 2: 2&#125; [1, 2]</span></span><br><span class="line"><span class="string">get value is:  1</span></span><br><span class="line"><span class="string">put &lt; 3 : 3 &gt;:  &#123;1: 1, 3: 3&#125; [3, 1]</span></span><br><span class="line"><span class="string">put &lt; 4 : 4 &gt;:  &#123;3: 3, 4: 4&#125; [4, 3]</span></span><br><span class="line"><span class="string">get 1 :  &#123;3: 3, 4: 4&#125; [4, 3]</span></span><br><span class="line"><span class="string">get value is:  -1</span></span><br><span class="line"><span class="string">get 3 :  &#123;3: 3, 4: 4&#125; [3, 4]</span></span><br><span class="line"><span class="string">get value is:  3</span></span><br><span class="line"><span class="string">get 5 :  &#123;3: 3, 4: 4&#125; [3, 4]</span></span><br><span class="line"><span class="string">get value is:  -1</span></span><br><span class="line"><span class="string">"""</span></span><br></pre></td></tr></table></figure>
+<h2 id="对应的-LeetCode-练习题"><a href="#对应的-LeetCode-练习题" class="headerlink" title="对应的 LeetCode 练习题"></a>对应的 LeetCode 练习题</h2><h3 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h3><p>并完成leetcode上的两数之和(1)及Happy  Number(202)！(要求全部用哈希思想实现！)</p>
+<h4 id="leetcode-1-两数之和"><a href="#leetcode-1-两数之和" class="headerlink" title="leetcode-1-两数之和"></a>leetcode-1-两数之和</h4><p>代码见：<a href="http://ywtail.github.io/2019/01/26/leetcode-1-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/">leetcode-1-两数之和</a> 中”方法二”，使用dict记录当前元素下标和匹配的值</p>
+<h4 id="LeetCode-202-快乐数Happy-Number"><a href="#LeetCode-202-快乐数Happy-Number" class="headerlink" title="LeetCode-202-快乐数Happy  Number"></a>LeetCode-202-快乐数Happy  Number</h4><p>使用dict记录求过的数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(object)</span>:</span>                                    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isHappy</span><span class="params">(self, n)</span>:</span>                                  </span><br><span class="line">        <span class="string">"""                                                </span></span><br><span class="line"><span class="string">        :type n: int                                       </span></span><br><span class="line"><span class="string">        :rtype: bool                                       </span></span><br><span class="line"><span class="string">        """</span>                                                </span><br><span class="line">        m_dict = &#123;&#125;                                        </span><br><span class="line">        <span class="keyword">while</span> n != <span class="number">1</span>:                                      </span><br><span class="line">            <span class="comment"># print(n)                                     </span></span><br><span class="line">            n = sum(int(i) ** <span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> str(n))           </span><br><span class="line">            <span class="keyword">if</span> n <span class="keyword">in</span> m_dict:                                </span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span>                               </span><br><span class="line">            m_dict[n] = <span class="number">1</span>                                  </span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span>                                        </span><br><span class="line">                                                                                                                  </span><br><span class="line">s = Solution()                                             </span><br><span class="line">print(s.isHappy(<span class="number">19</span>))                                       </span><br><span class="line">                                                           </span><br><span class="line"><span class="string">"""                                                        </span></span><br><span class="line"><span class="string">19                                                         </span></span><br><span class="line"><span class="string">82                                                         </span></span><br><span class="line"><span class="string">68                                                         </span></span><br><span class="line"><span class="string">100                                                        </span></span><br><span class="line"><span class="string">True                                                       </span></span><br><span class="line"><span class="string">"""</span></span><br></pre></td></tr></table></figure>
       
     </div>
 
@@ -543,7 +535,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/git/" rel="tag"># git</a>
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/leetcode/" rel="tag"># leetcode</a>
+          
+            <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
           
         </div>
       
@@ -556,8 +552,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/06/06/TensorFlow-5-CNN对CIFAR-10进行分类/" rel="next" title="TensorFlow (5): CNN对CIFAR-10进行分类">
-                <i class="fa fa-chevron-left"></i> TensorFlow (5): CNN对CIFAR-10进行分类
+              <a href="/2019/04/14/数据结构-3-排序、二分查找/" rel="next" title="数据结构-3-排序、二分查找">
+                <i class="fa fa-chevron-left"></i> 数据结构-3-排序、二分查找
               </a>
             
           </div>
@@ -565,10 +561,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/06/08/sklearn决策树可视化/" rel="prev" title="sklearn决策树可视化">
-                sklearn决策树可视化 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -782,7 +774,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#git-重复上次失败的提交"><span class="nav-number">1.</span> <span class="nav-text">git 重复上次失败的提交</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除本地-git-init-过的文件-override-r—r—r—"><span class="nav-number">2.</span> <span class="nav-text">删除本地 git init 过的文件 override r—r—r—</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#散列表（哈希表）"><span class="nav-number">1.</span> <span class="nav-text">散列表（哈希表）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实现一个基于链表法解决冲突问题的散列表"><span class="nav-number">1.1.</span> <span class="nav-text">实现一个基于链表法解决冲突问题的散列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现一个-LRU-缓存淘汰算法"><span class="nav-number">1.2.</span> <span class="nav-text">实现一个 LRU 缓存淘汰算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用dict和list实现"><span class="nav-number">1.2.1.</span> <span class="nav-text">使用dict和list实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对应的-LeetCode-练习题"><span class="nav-number">2.</span> <span class="nav-text">对应的 LeetCode 练习题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#哈希表"><span class="nav-number">2.1.</span> <span class="nav-text">哈希表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#leetcode-1-两数之和"><span class="nav-number">2.1.1.</span> <span class="nav-text">leetcode-1-两数之和</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LeetCode-202-快乐数Happy-Number"><span class="nav-number">2.1.2.</span> <span class="nav-text">LeetCode-202-快乐数Happy  Number</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
