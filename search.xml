@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[数据结构-5-二叉树、堆]]></title>
     <url>%2F2019%2F04%2F19%2F%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-5-%E4%BA%8C%E5%8F%89%E6%A0%91%E3%80%81%E5%A0%86%2F</url>
-    <content type="text"><![CDATA[二叉树介绍：二叉搜索树 若任意节点的左子树不空，则左子树上所有节点的值均小于它的根节点的值； 若任意节点的右子树不空，则右子树上所有节点的值均大于它的根节点的值； 任意节点的左、右子树也分别为二叉查找树； 没有键值相等的节点。 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129# coding: utf-8class Node(object): def __init__(self, val): self.left = None self.right = None self.val = valclass BST(object): def __init__(self): self.root = None # 插入 def insert(self, val): if self.root is None: self.root = Node(val) else: self.insert_node(self.root, val) def insert_node(self, current_node, val): if val &lt; current_node.val: if current_node.left is None: current_node.left = Node(val) else: self.insert_node(current_node.left, val) else: if current_node.right is None: current_node.right = Node(val) else: self.insert_node(current_node.right, val) # 查找 def find(self, val): if self.root is None: print("树为空，返回False") return False self.find_node(self.root, val) def find_node(self, node, val): if node is None: print("未找到，返回False") return False if val == node.val: print("找到了，返回True") return True elif val &lt; node.val: self.find_node(node.left, val) else: self.find_node(node.right, val) # 查找某个节点的前驱 def find_left_node(self, node): return node.left # 查找某个节点的后继 def find_right_node(self, node): return node.right # 前序遍历：中 左 右 def pre_order(self): print("=========前序遍历=========") if self.root is None: return self.pre_order_node(self.root) def pre_order_node(self, node): if node is None: return print(node.val) self.pre_order_node(node.left) self.pre_order_node(node.right) # 中序遍历：左 中 右 def in_order(self): print("=========中序遍历=========") if self.root is None: return self.in_order_node(self.root) def in_order_node(self, node): if node is None: return self.in_order_node(node.left) print(node.val) self.in_order_node(node.right) # 后序遍历：左 右 中 def post_order(self): print("=========后序遍历=========") if self.root is None: return self.post_order_node(self.root) def post_order_node(self, node): if node is None: return self.post_order_node(node.left) self.post_order_node(node.right) print(node.val) # 按层遍历 # 借助队列：将二叉树的节点加入队列，出队的同时将其非空左右孩子依次入队，出队到队列为空即完成遍历 def breadth_first(self): print("=========按层遍历=========") if self.root is None: return self.breadth_first_node(self.root) def breadth_first_node(self, node): queue = [node] while node and len(queue) != 0: print(queue[0].val) if queue[0].left is not None: queue.append(queue[0].left) if queue[0].right is not None: queue.append(queue[0].right) queue.pop(0)bst = BST()bst.find(3)bst.insert(7)bst.insert(1)bst.find(4)bst.insert(5)bst.pre_order()bst.in_order()bst.post_order()bst.breadth_first() 堆介绍：堆 支持的基本操作 操作 描述 时间复杂度 build 创建一个空堆 {\displaystyle O(n)} insert 向堆中插入一个新元素 {\displaystyle O(\log n)} update 将新元素提升使其匹配堆的性质 get 获取当前堆顶元素的值 {\displaystyle O(1)} delete 删除堆顶元素 {\displaystyle O(\log n)} heapify 使删除堆顶元素的堆再次成为堆 实现一个小顶堆、大顶堆、优先级队列使用list模拟 根节点位置：根节点的数据总是在数组的位置[0] 节点的父节点位置：假设一个非根节点的数据在数组中的位置[i]，那么它的父节点总是在位置[(i-1)/2] 节点的孩子节点位置：假设一个节点的数据在数组中的位置为[i]，那么它的孩子（如果有）总是在下面的这两个位置：左孩子在[2i+1]，右孩子在[2i+2]123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960class BinHeap: def __init__(self): self.heapList = [0] self.currentSize = 0 def percUp(self, i): while i // 2 &gt; 0: if self.heapList[i] &lt; self.heapList[i // 2]: tmp = self.heapList[i // 2] self.heapList[i // 2] = self.heapList[i] self.heapList[i] = tmp i = i // 2 def insert(self, k): self.heapList.append(k) self.currentSize = self.currentSize + 1 self.percUp(self.currentSize) def percDown(self, i): while (i * 2) &lt;= self.currentSize: mc = self.minChild(i) if self.heapList[i] &gt; self.heapList[mc]: tmp = self.heapList[i] self.heapList[i] = self.heapList[mc] self.heapList[mc] = tmp i = mc def minChild(self, i): if i * 2 + 1 &gt; self.currentSize: return i * 2 else: if self.heapList[i * 2] &lt; self.heapList[i * 2 + 1]: return i * 2 else: return i * 2 + 1 def delMin(self): retval = self.heapList[1] self.heapList[1] = self.heapList[self.currentSize] self.currentSize = self.currentSize - 1 self.heapList.pop() self.percDown(1) return retval def buildHeap(self, alist): i = len(alist) // 2 self.currentSize = len(alist) self.heapList = [0] + alist[:] while (i &gt; 0): self.percDown(i) i = i - 1bh = BinHeap()bh.buildHeap([9, 5, 6, 2, 3])print(bh.delMin())print(bh.delMin())print(bh.delMin())print(bh.delMin())print(bh.delMin()) 实现堆排序12345678910111213141516171819202122232425262728def heapify(arr, n, i): largest = i l = 2 * i + 1 # left = 2*i + 1 r = 2 * i + 2 # right = 2*i + 2 if l &lt; n and arr[i] &lt; arr[l]: largest = l if r &lt; n and arr[largest] &lt; arr[r]: largest = r if largest != i: arr[i], arr[largest] = arr[largest], arr[i] heapify(arr, n, largest)def heapSort(arr): n = len(arr) for i in range(n, -1, -1): heapify(arr, n, i) for i in range(n - 1, 0, -1): arr[i], arr[0] = arr[0], arr[i] # swap heapify(arr, i, 0)arr = [12, 11, 13, 5, 6, 7]heapSort(arr)n = len(arr)print(arr) #[5, 6, 7, 11, 12, 13] 利用优先级队列合并 K 个有序数组求一组动态数据集合的最大 Top K对应的 LeetCode 练习题Invert Binary Tree（翻转二叉树） 英文版：https://leetcode.com/problems/invert-binary-tree/ 中文版：https://leetcode-cn.com/problems/invert-binary-tree/ Maximum Depth of Binary Tree（二叉树的最大深度） 英文版：https://leetcode.com/problems/maximum-depth-of-binary-tree/ 中文版：https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/ Validate Binary Search Tree（验证二叉查找树） 英文版：https://leetcode.com/problems/validate-binary-search-tree/ 中文版：https://leetcode-cn.com/problems/validate-binary-search-tree/ Path Sum（路径总和） 英文版：https://leetcode.com/problems/path-sum/ 中文版：https://leetcode-cn.com/problems/path-sum/]]></content>
+    <content type="text"><![CDATA[二叉树介绍：二叉搜索树 若任意节点的左子树不空，则左子树上所有节点的值均小于它的根节点的值； 若任意节点的右子树不空，则右子树上所有节点的值均大于它的根节点的值； 任意节点的左、右子树也分别为二叉查找树； 没有键值相等的节点。 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129# coding: utf-8class Node(object): def __init__(self, val): self.left = None self.right = None self.val = valclass BST(object): def __init__(self): self.root = None # 插入 def insert(self, val): if self.root is None: self.root = Node(val) else: self.insert_node(self.root, val) def insert_node(self, current_node, val): if val &lt; current_node.val: if current_node.left is None: current_node.left = Node(val) else: self.insert_node(current_node.left, val) else: if current_node.right is None: current_node.right = Node(val) else: self.insert_node(current_node.right, val) # 查找 def find(self, val): if self.root is None: print("树为空，返回False") return False self.find_node(self.root, val) def find_node(self, node, val): if node is None: print("未找到，返回False") return False if val == node.val: print("找到了，返回True") return True elif val &lt; node.val: self.find_node(node.left, val) else: self.find_node(node.right, val) # 查找某个节点的前驱 def find_left_node(self, node): return node.left # 查找某个节点的后继 def find_right_node(self, node): return node.right # 前序遍历：中 左 右 def pre_order(self): print("=========前序遍历=========") if self.root is None: return self.pre_order_node(self.root) def pre_order_node(self, node): if node is None: return print(node.val) self.pre_order_node(node.left) self.pre_order_node(node.right) # 中序遍历：左 中 右 def in_order(self): print("=========中序遍历=========") if self.root is None: return self.in_order_node(self.root) def in_order_node(self, node): if node is None: return self.in_order_node(node.left) print(node.val) self.in_order_node(node.right) # 后序遍历：左 右 中 def post_order(self): print("=========后序遍历=========") if self.root is None: return self.post_order_node(self.root) def post_order_node(self, node): if node is None: return self.post_order_node(node.left) self.post_order_node(node.right) print(node.val) # 按层遍历 # 借助队列：将二叉树的节点加入队列，出队的同时将其非空左右孩子依次入队，出队到队列为空即完成遍历 def breadth_first(self): print("=========按层遍历=========") if self.root is None: return self.breadth_first_node(self.root) def breadth_first_node(self, node): queue = [node] while node and len(queue) != 0: print(queue[0].val) if queue[0].left is not None: queue.append(queue[0].left) if queue[0].right is not None: queue.append(queue[0].right) queue.pop(0)bst = BST()bst.find(3)bst.insert(7)bst.insert(1)bst.find(4)bst.insert(5)bst.pre_order()bst.in_order()bst.post_order()bst.breadth_first() 堆介绍：堆 支持的基本操作 操作 描述 时间复杂度 build 创建一个空堆 {\displaystyle O(n)} insert 向堆中插入一个新元素 {\displaystyle O(\log n)} update 将新元素提升使其匹配堆的性质 get 获取当前堆顶元素的值 {\displaystyle O(1)} delete 删除堆顶元素 {\displaystyle O(\log n)} heapify 使删除堆顶元素的堆再次成为堆 小顶堆及排序使用list模拟 根节点位置：根节点的数据总是在数组的位置[0] 节点的父节点位置：假设一个非根节点的数据在数组中的位置[i]，那么它的父节点总是在位置[(i-1)/2] 节点的孩子节点位置：假设一个节点的数据在数组中的位置为[i]，那么它的孩子（如果有）总是在下面的这两个位置：左孩子在[2i+1]，右孩子在[2i+2]12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364# coding:utf-8# 堆与最小堆排序：从小到大排序。节点编号从1开始。# 向下调整，每次跟孩子中较小的那个值交换def siftdown(i): #i为要调整的节点的编号 while i*2&lt;=n: #要调整的节点至少有左孩子 temp=i*2 if h[i*2]&lt;h[i] else i #temp标记值最小的节点编号 if i*2+1&lt;=n and h[i*2+1]&lt;h[temp]: temp=i*2+1 if temp!=i: h[i],h[temp]=h[temp],h[i] i=temp else: break #已经是堆，不需要调整# 向上调整，每次跟父节点比较def siftup(i): while i/2&gt;0: if h[i]&lt;h[i/2]: h[i],h[i/2]=h[i/2],h[i] i=i/2 else: break# 创建堆：调整二叉树中的节点，从n/2节点开始def creat(): for i in range(1,n/2+1)[::-1]: siftdown(i) # 删除顶部元素，尾部元素放到顶部调整，堆大小-1def deletetop(): global n temp=h[1] h[1]=h[n] n-=1 siftdown(1) return tempnum=int(raw_input()) h=map(int,raw_input().split()) #放入完全二叉树h.insert(0,0) #为了方便计算，输入值从1开始编号n=numcreat() #创建堆print h# 排序，每次删除顶部（最小），将尾部的元素放到顶部，向下调整for i in range(num): print deletetop(),'''input：1499 5 36 7 22 17 46 12 2 19 25 28 1 92output:[0, 1, 2, 17, 5, 19, 28, 46, 12, 7, 22, 25, 99, 36, 92]1 2 5 7 12 17 19 22 25 28 36 46 92 99每次删除最小，插入一个数再删除最小：删除堆顶，将元素插入堆顶向下调整。每次增加一个元素：插入末尾，向上调整。建立堆：1.每次siftup,O(NlogN)；2.放入一个完全二叉树再调整,O(N)堆排序：O(NlogN)，和快排一样''' 大顶堆及排序123456789101112131415161718192021222324252627282930313233343536373839404142434445464748# coding:utf-8# 最大堆排序：从小到大排序。节点编号从1开始。# 向下调整，每次跟孩子中较小的那个值交换def siftdown(i): #i为要调整的节点的编号 while i*2&lt;=n: #要调整的节点至少有左孩子 temp=i*2 if h[i*2]&gt;h[i] else i #temp标记值最小的节点编号 if i*2+1&lt;=n and h[i*2+1]&gt;h[temp]: temp=i*2+1 if temp!=i: h[i],h[temp]=h[temp],h[i] i=temp else: break #已经是堆，不需要调整# 创建堆：调整二叉树中的节点，从n/2节点开始def creat(): for i in range(1,n/2+1)[::-1]: siftdown(i) # 每次将最大的（堆顶）调整到最后，堆大小-1def heapsort(): global n for i in range(num-1): h[1],h[n]=h[n],h[1] n-=1 siftdown(1)num=int(raw_input()) h=map(int,raw_input().split()) #放入完全二叉树h.insert(0,0) #为了方便计算，输入值从1开始编号n=numcreat() #创建堆print hheapsort()print h[1:]'''input：1499 5 36 7 22 17 46 12 2 19 25 28 1 92output:[0, 99, 25, 92, 12, 22, 28, 46, 7, 2, 19, 5, 17, 1, 36][1, 2, 5, 7, 12, 17, 19, 22, 25, 28, 36, 46, 92, 99]''' 优先级队列利用优先级队列合并 K 个有序数组求一组动态数据集合的最大 Top K对应的 LeetCode 练习题Invert Binary Tree（翻转二叉树） 英文版：https://leetcode.com/problems/invert-binary-tree/ 中文版：https://leetcode-cn.com/problems/invert-binary-tree/ Maximum Depth of Binary Tree（二叉树的最大深度） 英文版：https://leetcode.com/problems/maximum-depth-of-binary-tree/ 中文版：https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/ Validate Binary Search Tree（验证二叉查找树） 英文版：https://leetcode.com/problems/validate-binary-search-tree/ 中文版：https://leetcode-cn.com/problems/validate-binary-search-tree/ Path Sum（路径总和） 英文版：https://leetcode.com/problems/path-sum/ 中文版：https://leetcode-cn.com/problems/path-sum/]]></content>
       <categories>
         <category>数据结构</category>
       </categories>
@@ -108,8 +108,8 @@
         <category>MachineLearning</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
       </tags>
   </entry>
   <entry>
@@ -327,8 +327,8 @@
         <category>Machine Learning</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
       </tags>
   </entry>
   <entry>
@@ -392,9 +392,9 @@
         <category>Kaggle</category>
       </categories>
       <tags>
+        <tag>python</tag>
         <tag>Kaggle</tag>
         <tag>MachineLearning</tag>
-        <tag>python</tag>
       </tags>
   </entry>
   <entry>
@@ -405,8 +405,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -441,8 +441,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -454,8 +454,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -480,8 +480,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -493,8 +493,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -566,8 +566,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
