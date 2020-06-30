@@ -123,7 +123,7 @@
 
 
   <meta name="description" content="什么是 word embedding参考：https://www.zhihu.com/question/32275069  Embedding在数学上表示一个maping, f: X -&amp;gt; Y， 也就是一个function，其中该函数是injective（就是我们所说的单射函数，每个Y只有唯一的X对应，反之亦然）和structure-preserving (结构保存，比如在X所属的空间上X1">
-<meta name="keywords" content="python,MachineLearning,NLP">
+<meta name="keywords" content="MachineLearning,python,NLP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Word Embedding">
 <meta property="og:url" content="http://ywtail.github.io/2020/06/27/Word-Embedding/index.html">
@@ -131,7 +131,7 @@
 <meta property="og:description" content="什么是 word embedding参考：https://www.zhihu.com/question/32275069  Embedding在数学上表示一个maping, f: X -&amp;gt; Y， 也就是一个function，其中该函数是injective（就是我们所说的单射函数，每个Y只有唯一的X对应，反之亦然）和structure-preserving (结构保存，比如在X所属的空间上X1">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://ywtail.github.io/images/Word_Embedding_1.jpg">
-<meta property="og:updated_time" content="2020-06-27T13:47:54.220Z">
+<meta property="og:updated_time" content="2020-06-30T14:03:01.510Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Word Embedding">
 <meta name="twitter:description" content="什么是 word embedding参考：https://www.zhihu.com/question/32275069  Embedding在数学上表示一个maping, f: X -&amp;gt; Y， 也就是一个function，其中该函数是injective（就是我们所说的单射函数，每个Y只有唯一的X对应，反之亦然）和structure-preserving (结构保存，比如在X所属的空间上X1">
@@ -423,12 +423,24 @@
                 
               
 
-              <time title="创建时间：2020-06-27 21:28:36 / 修改时间：21:47:54" itemprop="dateCreated datePublished" datetime="2020-06-27T21:28:36+08:00">2020-06-27</time>
+              <time title="创建时间：2020-06-27 21:28:36" itemprop="dateCreated datePublished" datetime="2020-06-27T21:28:36+08:00">2020-06-27</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-06-30 22:03:01" itemprop="dateModified" datetime="2020-06-30T22:03:01+08:00">2020-06-30</time>
               
             
           </span>
@@ -514,6 +526,10 @@
 <p><img src="/images/Word_Embedding_1.jpg" alt="Word_Embedding_1"></p>
 <h2 id="Word2Vec"><a href="#Word2Vec" class="headerlink" title="Word2Vec"></a>Word2Vec</h2><p>参考：<a href="http://ywtail.github.io/2017/06/09/TensorFlow-6-%E5%AE%9E%E7%8E%B0Word2Vec/">http://ywtail.github.io/2017/06/09/TensorFlow-6-%E5%AE%9E%E7%8E%B0Word2Vec/</a></p>
 <h2 id="Glove"><a href="#Glove" class="headerlink" title="Glove"></a>Glove</h2><p>参考：<a href="http://www.fanyeong.com/2018/02/19/glove-in-detail/" target="_blank" rel="noopener">http://www.fanyeong.com/2018/02/19/glove-in-detail/</a></p>
+<h2 id="N-Gram"><a href="#N-Gram" class="headerlink" title="N-Gram"></a>N-Gram</h2><p>N-Gram是一种基于统计语言模型的算法。它的基本思想是将文本里面的内容按照字节进行大小为N的滑动窗口操作，形成了长度是N的字节片段序列。</p>
+<p>每一个字节片段称为gram，对所有gram的出现频度进行统计，并且按照事先设定好的阈值进行过滤，形成关键gram列表，也就是这个文本的向量特征空间，列表中的每一种gram就是一个特征向量维度。</p>
+<p>该模型基于这样一种假设，第N个词的出现只与前面N-1个词相关，而与其它任何词都不相关，整句的概率就是各个词出现概率的乘积。这些概率可以通过直接从语料中统计N个词同时出现的次数得到。常用的是二元的Bi-Gram和三元的Tri-Gram。</p>
+<h2 id="FastText"><a href="#FastText" class="headerlink" title="FastText"></a>FastText</h2><p>fastText是Facebook于2016年开源的一个词向量计算和文本分类工具，在学术上并没有太大创新。但是它的优点也非常明显，在文本分类任务中，fastText（浅层网络）往往能取得和深度网络相媲美的精度，却在训练时间上比深度网络快许多数量级。在标准的多核CPU上， 能够训练10亿词级别语料库的词向量在10分钟之内，能够分类有着30万多类别的50多万句子在1分钟之内。</p>
 
       
     </div>
@@ -537,9 +553,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/python/" rel="tag"># python</a>
-          
             <a href="/tags/MachineLearning/" rel="tag"># MachineLearning</a>
+          
+            <a href="/tags/python/" rel="tag"># python</a>
           
             <a href="/tags/NLP/" rel="tag"># NLP</a>
           
@@ -780,7 +796,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是-word-embedding"><span class="nav-number">1.</span> <span class="nav-text">什么是 word embedding</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Word2Vec"><span class="nav-number">2.</span> <span class="nav-text">Word2Vec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Glove"><span class="nav-number">3.</span> <span class="nav-text">Glove</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是-word-embedding"><span class="nav-number">1.</span> <span class="nav-text">什么是 word embedding</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Word2Vec"><span class="nav-number">2.</span> <span class="nav-text">Word2Vec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Glove"><span class="nav-number">3.</span> <span class="nav-text">Glove</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#N-Gram"><span class="nav-number">4.</span> <span class="nav-text">N-Gram</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FastText"><span class="nav-number">5.</span> <span class="nav-text">FastText</span></a></li></ol></div>
             
 
           </div>
