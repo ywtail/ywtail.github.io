@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Deep Crossing]]></title>
+    <url>%2F2021%2F03%2F16%2FDeep-Crossing%2F</url>
+    <content type="text"><![CDATA[Deep Crossing模型是由微软研究院在论文《Deep Crossing: Web-Scale Modeling without Manually Crafted Combinatorial Features》中提出的，它主要是用来解决大规模特征自动组合问题，从而减轻或者避免手工进行特征组合的开销。Deep Crossing可以说是深度学习CTR模型的最典型和基础性的模型。 模型 模型的输入是一系列的独立特征，模型总共包含4层，分别是Embedding层、Stacking层、Residual Unit层、Scoring层，模型的输出是用户点击率预测值。注意上图中红色方框部分，输入特征没有经过Embedding层就直接连接到了Stacking层了。这是因为输入特征可能是稠密的也可能是稀疏的，论文中指出，对于维度小于256的特征直接连接到Stacking层。 损失函数论文中使用的是交叉熵损失函数，但是也可以使用Softmax或者其他损失函数： Embedding层将高维稀疏特征转化为低维稠密特征，公式如下： Stacking层将特征聚合起来，形成一个向量 Residual层Deep Crossing模型使用稍微修改过的残差单元，它不使用卷积内核，改为了两层神经网络。 残差层是由下图所示的残差单元构建成的。残差单元如下所示： 公式定义为： 将XI移项到等式左侧，可以看出 F函数拟合的是输入与输出之间的残差。对输入进行全连接变换之后，经过relu激活函数送入第二个全连接层，将输出结果与原始输入进行 element-wise add 操作，再经过relu激活输出 Scoring层Residual层的输出首先连接到全连接层，其次再经过Sigmoid激活函数，最后输出的是一个广告的预测点击率。 参考 datawhalechina github 知乎论文介绍：https://zhuanlan.zhihu.com/p/91057914 简书：https://www.jianshu.com/p/e1873e9a97ad tf实现：https://github.com/ZiyaoGeng/Recommender-System-with-TF2.0/tree/master/Deep_Crossing]]></content>
+      <tags>
+        <tag>DeepRecommendationModel</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Word Embedding]]></title>
     <url>%2F2020%2F06%2F27%2FWord-Embedding%2F</url>
     <content type="text"><![CDATA[什么是 word embedding参考：https://www.zhihu.com/question/32275069 Embedding在数学上表示一个maping, f: X -&gt; Y， 也就是一个function，其中该函数是injective（就是我们所说的单射函数，每个Y只有唯一的X对应，反之亦然）和structure-preserving (结构保存，比如在X所属的空间上X1 &lt; X2,那么映射后在Y所属空间上同理 Y1 &lt; Y2)。那么对于word embedding，就是将单词word映射到另外一个空间，其中这个映射具有injective和structure-preserving的特点。 通俗的翻译可以认为是单词嵌入，就是把X所属空间的单词映射为到Y空间的多维向量，那么该多维向量相当于嵌入到Y所属空间中。 word embedding，就是找到一个映射或者函数，生成在一个新的空间上的表达，该表达就是word representation。 推广开来，还有image embedding, video embedding, 都是一种将源数据映射到另外一个空间 常用word embedding方法包括word2vec，glove Word2Vec参考：http://ywtail.github.io/2017/06/09/TensorFlow-6-%E5%AE%9E%E7%8E%B0Word2Vec/ Glove参考：http://www.fanyeong.com/2018/02/19/glove-in-detail/ N-GramN-Gram是一种基于统计语言模型的算法。它的基本思想是将文本里面的内容按照字节进行大小为N的滑动窗口操作，形成了长度是N的字节片段序列。 每一个字节片段称为gram，对所有gram的出现频度进行统计，并且按照事先设定好的阈值进行过滤，形成关键gram列表，也就是这个文本的向量特征空间，列表中的每一种gram就是一个特征向量维度。 该模型基于这样一种假设，第N个词的出现只与前面N-1个词相关，而与其它任何词都不相关，整句的概率就是各个词出现概率的乘积。这些概率可以通过直接从语料中统计N个词同时出现的次数得到。常用的是二元的Bi-Gram和三元的Tri-Gram。 FastTextfastText是Facebook于2016年开源的一个词向量计算和文本分类工具，在学术上并没有太大创新。但是它的优点也非常明显，在文本分类任务中，fastText（浅层网络）往往能取得和深度网络相媲美的精度，却在训练时间上比深度网络快许多数量级。在标准的多核CPU上， 能够训练10亿词级别语料库的词向量在10分钟之内，能够分类有着30万多类别的50多万句子在1分钟之内。]]></content>
@@ -8,8 +16,8 @@
         <category>NLP</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>NLP</tag>
       </tags>
   </entry>
@@ -186,8 +194,8 @@
         <category>MachineLearning</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
       </tags>
   </entry>
   <entry>
@@ -405,8 +413,8 @@
         <category>Machine Learning</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
       </tags>
   </entry>
   <entry>
@@ -470,9 +478,9 @@
         <category>Kaggle</category>
       </categories>
       <tags>
+        <tag>python</tag>
         <tag>Kaggle</tag>
         <tag>MachineLearning</tag>
-        <tag>python</tag>
       </tags>
   </entry>
   <entry>
@@ -483,8 +491,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -519,8 +527,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -532,8 +540,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -558,8 +566,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -571,8 +579,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -644,8 +652,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>MachineLearning</tag>
         <tag>python</tag>
+        <tag>MachineLearning</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
