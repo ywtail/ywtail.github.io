@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Wide&Deep]]></title>
+    <url>%2F2021%2F03%2F18%2FWide-Deep%2F</url>
+    <content type="text"><![CDATA[Wide &amp; Deep 是 Google 发表在 DLRS 2016 上的《Wide &amp; Deep Learning for Recommender System》。Wide &amp; Deep 模型的核心思想是结合线性模型的记忆能力和 DNN 模型的泛化能力，从而提升整体模型性能。Wide &amp; Deep 已成功应用到了 Google Play 的app推荐业务，并于TensorFlow中封装。该结构被提出后即引起热捧，在业界影响力非常大，很多公司纷纷仿照该结构并成功应用于自身的推荐等相关业务。 模型Wide&amp;Deep模型的初衷是融合高阶和低阶特征。原始模型里面：wide部分是特征工程+LR，deep部分是MLP(多层感知器（Multilayer Perceptron,缩写MLP）)。Wide&amp;Deep是一类模型的统称，将LR换成FM同样也是一个Wide&amp;Deep模型。 后续的改进如下： DCN/DeepFM是对wide部分的改进，将LR替换为CN，FM等。 NFM是对Deep部分的改进，加入特征交叉层Bi-interaction。 本文讨论最原始的模型，结构如下 Wide&amp;Deep全文围绕着“记忆”(Memorization)与“扩展(Generalization)”两个词展开。实际上，它们在推荐系统中有两个更响亮的名字，Exploitation &amp; Exploration，即著名的EE问题。 记忆（memorization）即从历史数据中发现item或者特征之间的相关性；哪些特征更重要——Wide部分。 泛化（generalization）即相关性的传递，发现在历史数据中很少或者没有出现的新的特征组合；——Deep部分。 在推荐系统中，记忆体现的准确性，而泛化体现的是新颖性。 Widewide部分是一个广义的线性模型，输入的特征主要有两部分组成，一部分是原始的部分特征，另一部分是原始特征的交叉特征(cross-product transformation)。 Wide侧记住的是历史数据中那些常见、高频的模式。Wide侧没有发现新的模式，只是学习到这些模式之间的权重，做一些模式的筛选。正因为Wide侧不能发现新模式，因此我们需要根据人工经验、业务背景，将我们认为有价值的、显而易见的特征及特征组合，喂入Wide侧。 DeepDeep部分是一个DNN模型，输入的特征主要分为两大类，一类是数值特征(可直接输入DNN)，一类是类别特征(需要经过Embedding之后才能输入到DNN中) Deep侧，通过embedding+深层交互，能够学交叉特征。 Wide&amp;DeepW&amp;D模型是将两部分输出的结果结合起来联合训练，将deep和wide部分的输出重新使用一个逻辑回归模型做最终的预测，输出概率值。 损失函数 模型选取logistic loss作为损失函数，此时Wide &amp; Deep最后的预测输出为： 优缺点优点 简单有效。结构简单易于理解，效果优异。目前仍在工业界广泛使用，也证明了该模型的有效性。 结构新颖。使用不同于以往的线性模型与DNN串行连接的方式，而将线性模型与DNN并行连接，同时兼顾模型的Memorization与Generalization。 缺点Wide侧的特征工程仍无法避免。 参考 详解 Wide &amp; Deep 结构背后的动机 https://github.com/datawhalechina/team-learning-rs/blob/master/DeepRecommendationModel/Wide%26Deep.md 看Google如何实现Wide &amp; Deep模型(1) 推荐系统CTR实战——Wide &amp; Deep]]></content>
+      <tags>
+        <tag>DeepRecommendationModel</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Deep Crossing]]></title>
     <url>%2F2021%2F03%2F16%2FDeep-Crossing%2F</url>
     <content type="text"><![CDATA[Deep Crossing模型是由微软研究院在论文《Deep Crossing: Web-Scale Modeling without Manually Crafted Combinatorial Features》中提出的，它主要是用来解决大规模特征自动组合问题，从而减轻或者避免手工进行特征组合的开销。Deep Crossing可以说是深度学习CTR模型的最典型和基础性的模型。 模型 模型的输入是一系列的独立特征，模型总共包含4层，分别是Embedding层、Stacking层、Residual Unit层、Scoring层，模型的输出是用户点击率预测值。注意上图中红色方框部分，输入特征没有经过Embedding层就直接连接到了Stacking层了。这是因为输入特征可能是稠密的也可能是稀疏的，论文中指出，对于维度小于256的特征直接连接到Stacking层。 损失函数论文中使用的是交叉熵损失函数，但是也可以使用Softmax或者其他损失函数： Embedding层将高维稀疏特征转化为低维稠密特征，公式如下： Stacking层将特征聚合起来，形成一个向量 Residual层Deep Crossing模型使用稍微修改过的残差单元，它不使用卷积内核，改为了两层神经网络。 残差层是由下图所示的残差单元构建成的。残差单元如下所示： 公式定义为： 将XI移项到等式左侧，可以看出 F函数拟合的是输入与输出之间的残差。对输入进行全连接变换之后，经过relu激活函数送入第二个全连接层，将输出结果与原始输入进行 element-wise add 操作，再经过relu激活输出 Scoring层Residual层的输出首先连接到全连接层，其次再经过Sigmoid激活函数，最后输出的是一个广告的预测点击率。 参考 datawhalechina github 知乎论文介绍：https://zhuanlan.zhihu.com/p/91057914 简书：https://www.jianshu.com/p/e1873e9a97ad tf实现：https://github.com/ZiyaoGeng/Recommender-System-with-TF2.0/tree/master/Deep_Crossing]]></content>
@@ -16,8 +24,8 @@
         <category>NLP</category>
       </categories>
       <tags>
-        <tag>python</tag>
         <tag>MachineLearning</tag>
+        <tag>python</tag>
         <tag>NLP</tag>
       </tags>
   </entry>
@@ -194,8 +202,8 @@
         <category>MachineLearning</category>
       </categories>
       <tags>
-        <tag>python</tag>
         <tag>MachineLearning</tag>
+        <tag>python</tag>
       </tags>
   </entry>
   <entry>
@@ -413,8 +421,8 @@
         <category>Machine Learning</category>
       </categories>
       <tags>
-        <tag>python</tag>
         <tag>MachineLearning</tag>
+        <tag>python</tag>
       </tags>
   </entry>
   <entry>
@@ -478,9 +486,9 @@
         <category>Kaggle</category>
       </categories>
       <tags>
-        <tag>python</tag>
         <tag>Kaggle</tag>
         <tag>MachineLearning</tag>
+        <tag>python</tag>
       </tags>
   </entry>
   <entry>
@@ -491,8 +499,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>python</tag>
         <tag>MachineLearning</tag>
+        <tag>python</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -527,8 +535,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>python</tag>
         <tag>MachineLearning</tag>
+        <tag>python</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -540,8 +548,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>python</tag>
         <tag>MachineLearning</tag>
+        <tag>python</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -566,8 +574,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>python</tag>
         <tag>MachineLearning</tag>
+        <tag>python</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -579,8 +587,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>python</tag>
         <tag>MachineLearning</tag>
+        <tag>python</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
@@ -652,8 +660,8 @@
         <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>python</tag>
         <tag>MachineLearning</tag>
+        <tag>python</tag>
         <tag>TensorFlow</tag>
       </tags>
   </entry>
